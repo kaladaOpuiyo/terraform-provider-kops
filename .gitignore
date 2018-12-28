@@ -1,0 +1,9 @@
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*
+glide.lock
+*.tfstate
+*.tfstate.*
+sample.yaml
+*.tfvars
+terraform-provider-kops

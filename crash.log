@@ -1,0 +1,1751 @@
+2019/01/01 18:26:33 [INFO] Terraform version: 0.11.7  
+2019/01/01 18:26:33 [INFO] Go runtime version: go1.10.1
+2019/01/01 18:26:33 [INFO] CLI args: []string{"/usr/local/Cellar/terraform/0.11.7/bin/terraform", "apply"}
+2019/01/01 18:26:33 [DEBUG] Attempting to open CLI config file: /Users/kalada/.terraformrc
+2019/01/01 18:26:33 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2019/01/01 18:26:33 [INFO] CLI command args: []string{"apply"}
+2019/01/01 18:26:33 [INFO] command: empty terraform config, returning nil
+2019/01/01 18:26:33 [DEBUG] command: no data state file found for backend config
+2019/01/01 18:26:33 [DEBUG] New state was assigned lineage "92682d0d-2755-ff13-bc1a-97f0593d277e"
+2019/01/01 18:26:33 [INFO] command: backend initialized: <nil>
+2019/01/01 18:26:33 [DEBUG] checking for provider in "."
+2019/01/01 18:26:33 [WARN] found legacy provider "terraform-provider-kops"
+2019/01/01 18:26:33 [DEBUG] checking for provider in "/usr/local/Cellar/terraform/0.11.7/bin"
+2019/01/01 18:26:33 [DEBUG] checking for provider in ".terraform/plugins/darwin_amd64"
+2019/01/01 18:26:33 [DEBUG] found provider "terraform-provider-aws_v1.54.0_x4"
+2019/01/01 18:26:33 [DEBUG] checking for provider in "/Users/kalada/.terraform.d/plugins"
+2019/01/01 18:26:33 [DEBUG] found valid plugin: "kops", "0.0.0", "/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/terraform-provider-kops"
+2019/01/01 18:26:33 [DEBUG] found valid plugin: "aws", "1.54.0", "/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/.terraform/plugins/darwin_amd64/terraform-provider-aws_v1.54.0_x4"
+2019/01/01 18:26:33 [DEBUG] checking for provisioner in "."
+2019/01/01 18:26:33 [DEBUG] checking for provisioner in "/usr/local/Cellar/terraform/0.11.7/bin"
+2019/01/01 18:26:33 [DEBUG] checking for provisioner in ".terraform/plugins/darwin_amd64"
+2019/01/01 18:26:33 [DEBUG] checking for provisioner in "/Users/kalada/.terraform.d/plugins"
+2019/01/01 18:26:33 [INFO] command: backend <nil> is not enhanced, wrapping in local
+2019/01/01 18:26:33 [INFO] backend/local: starting Apply operation
+2019/01/01 18:26:33 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:33 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:33 [INFO] terraform: building graph: GraphTypeInput
+2019/01/01 18:26:33 [TRACE] ConfigTransformer: Starting for path: []
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.ConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.LocalTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.OutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.OrphanResourceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.OrphanOutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [TRACE] AttachResourceConfigTransformer: Beginning...
+2019/01/01 18:26:33 [TRACE] AttachResourceConfigTransformer: Attach resource config request: kops_cluster.aux_cluster
+2019/01/01 18:26:33 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"aux_cluster", Type:"kops_cluster", RawCount:(*config.RawConfig)(0xc420412bd0), RawConfig:(*config.RawConfig)(0xc420412b60), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string{"aws_s3_bucket.kops_state"}, Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:33 [TRACE] AttachResourceConfigTransformer: Attach resource config request: aws_s3_bucket.kops_state
+2019/01/01 18:26:33 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"kops_state", Type:"aws_s3_bucket", RawCount:(*config.RawConfig)(0xc420412cb0), RawConfig:(*config.RawConfig)(0xc420412c40), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string(nil), Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.AttachResourceConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [DEBUG] Resource state not found for "kops_cluster.aux_cluster": kops_cluster.aux_cluster
+2019/01/01 18:26:33 [DEBUG] Resource state not found for "aws_s3_bucket.kops_state": aws_s3_bucket.kops_state
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.RootVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+2019/01/01 18:26:33 [TRACE] ProviderConfigTransformer: Starting for path: []
+2019/01/01 18:26:33 [TRACE] Attach provider request: []string{} aws
+2019/01/01 18:26:33 [TRACE] Attaching provider config: *config.ProviderConfig{Name:"aws", Alias:"", Version:"~> 1.45", RawConfig:(*config.RawConfig)(0xc420412af0)}
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.ProviderConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+provider.aws - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [DEBUG] adding missing provider: kops
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.MissingProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [DEBUG] resource kops_cluster.aux_cluster using provider provider.kops
+2019/01/01 18:26:33 [DEBUG] resource aws_s3_bucket.kops_state using provider provider.aws
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.ProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.PruneProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.ParentProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.graphTransformerMulti:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.ModuleVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.RemovedModuleTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [DEBUG] ReferenceTransformer: "kops_cluster.aux_cluster" references: [aws_s3_bucket.kops_state]
+2019/01/01 18:26:33 [DEBUG] ReferenceTransformer: "aws_s3_bucket.kops_state" references: []
+2019/01/01 18:26:33 [DEBUG] ReferenceTransformer: "provider.aws" references: []
+2019/01/01 18:26:33 [DEBUG] ReferenceTransformer: "provider.kops" references: []
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.CountBoundaryTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.CloseProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.CloseProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.RootTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:33 [TRACE] Graph after step *terraform.TransitiveReductionTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeAbstractResource
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeAbstractResource
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:33 [DEBUG] Starting graph walk: walkInput
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "kops_cluster.aux_cluster"
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "provider.aws"
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "provider.kops"
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "provider.aws (close)"
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "provider.kops (close)"
+2019/01/01 18:26:33 [TRACE] dag/walk: added new vertex: "root"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "provider.kops"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "root" waiting on "provider.aws (close)"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "root" waiting on "provider.kops (close)"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "provider.aws (close)" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "provider.kops (close)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "meta.count-boundary (count boundary fixup)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "root" waiting on "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:33 [TRACE] dag/walk: added edge: "aws_s3_bucket.kops_state" waiting on "provider.aws"
+2019/01/01 18:26:33 [TRACE] dag/walk: dependencies changed for "aws_s3_bucket.kops_state", sending new deps
+2019/01/01 18:26:33 [TRACE] dag/walk: dependencies changed for "kops_cluster.aux_cluster", sending new deps
+2019/01/01 18:26:33 [TRACE] dag/walk: dependencies changed for "root", sending new deps
+2019/01/01 18:26:33 [TRACE] dag/walk: dependencies changed for "provider.aws (close)", sending new deps
+2019/01/01 18:26:33 [TRACE] dag/walk: dependencies changed for "provider.kops (close)", sending new deps
+2019/01/01 18:26:33 [TRACE] dag/walk: dependencies changed for "meta.count-boundary (count boundary fixup)", sending new deps
+2019/01/01 18:26:33 [TRACE] dag/walk: walking "provider.aws"
+2019/01/01 18:26:33 [TRACE] dag/walk: walking "provider.kops"
+2019/01/01 18:26:33 [TRACE] vertex 'root.provider.kops': walking
+2019/01/01 18:26:33 [TRACE] vertex 'root.provider.aws': walking
+2019/01/01 18:26:33 [TRACE] vertex 'root.provider.kops': evaluating
+2019/01/01 18:26:33 [TRACE] [walkInput] Entering eval tree: provider.kops
+2019/01/01 18:26:33 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:33 [TRACE] root: eval: *terraform.EvalInitProvider
+2019-01-01T18:26:33.933-0600 [DEBUG] plugin: starting plugin: path=/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/terraform-provider-kops args=[/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/terraform-provider-kops]
+2019/01/01 18:26:33 [TRACE] vertex 'root.provider.aws': evaluating
+2019/01/01 18:26:33 [TRACE] [walkInput] Entering eval tree: provider.aws
+2019/01/01 18:26:33 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:33 [TRACE] root: eval: *terraform.EvalInitProvider
+2019-01-01T18:26:33.941-0600 [DEBUG] plugin: waiting for RPC address: path=/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/terraform-provider-kops
+2019-01-01T18:26:34.008-0600 [DEBUG] plugin.terraform-provider-kops: plugin address: timestamp=2019-01-01T18:26:34.008-0600 network=unix address=/var/folders/k_/7_l6k6tx40lc_ws3nmf3bkvc0000gn/T/plugin064287830
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019-01-01T18:26:34.010-0600 [DEBUG] plugin: starting plugin: path=/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/.terraform/plugins/darwin_amd64/terraform-provider-aws_v1.54.0_x4 args=[/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/.terraform/plugins/darwin_amd64/terraform-provider-aws_v1.54.0_x4]
+2019-01-01T18:26:34.019-0600 [DEBUG] plugin: waiting for RPC address: path=/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/.terraform/plugins/darwin_amd64/terraform-provider-aws_v1.54.0_x4
+2019-01-01T18:26:34.032-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: plugin address: timestamp=2019-01-01T18:26:34.032-0600 address=/var/folders/k_/7_l6k6tx40lc_ws3nmf3bkvc0000gn/T/plugin485095475 network=unix
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInputProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInputProvider
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] [walkInput] Exiting eval tree: provider.aws
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] vertex 'root.aws_s3_bucket.kops_state': walking
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] [walkInput] Exiting eval tree: provider.kops
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.aws (close)"
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws (close)': walking
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] vertex 'root.kops_cluster.aux_cluster': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws (close)': evaluating
+2019/01/01 18:26:34 [TRACE] [walkInput] Entering eval tree: provider.aws (close)
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCloseProvider
+2019/01/01 18:26:34 [TRACE] [walkInput] Exiting eval tree: provider.aws (close)
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:34 [TRACE] vertex 'root.meta.count-boundary (count boundary fixup)': walking
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.kops (close)"
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops (close)': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops (close)': evaluating
+2019/01/01 18:26:34 [TRACE] vertex 'root.meta.count-boundary (count boundary fixup)': evaluating
+2019/01/01 18:26:34 [TRACE] [walkInput] Entering eval tree: meta.count-boundary (count boundary fixup)
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCountFixZeroOneBoundaryGlobal
+2019/01/01 18:26:34 [TRACE] [walkInput] Exiting eval tree: meta.count-boundary (count boundary fixup)
+2019/01/01 18:26:34 [TRACE] [walkInput] Entering eval tree: provider.kops (close)
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCloseProvider
+2019/01/01 18:26:34 [TRACE] [walkInput] Exiting eval tree: provider.kops (close)
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "root"
+2019/01/01 18:26:34 [TRACE] vertex 'root.root': walking
+2019/01/01 18:26:34 [INFO] terraform: building graph: GraphTypeValidate
+2019/01/01 18:26:34 [TRACE] ConfigTransformer: Starting for path: []
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.LocalTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OrphanResourceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OrphanOutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [TRACE] AttachResourceConfigTransformer: Beginning...
+2019/01/01 18:26:34 [TRACE] AttachResourceConfigTransformer: Attach resource config request: kops_cluster.aux_cluster
+2019/01/01 18:26:34 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"aux_cluster", Type:"kops_cluster", RawCount:(*config.RawConfig)(0xc420412bd0), RawConfig:(*config.RawConfig)(0xc420412b60), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string{"aws_s3_bucket.kops_state"}, Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:34 [TRACE] AttachResourceConfigTransformer: Attach resource config request: aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"kops_state", Type:"aws_s3_bucket", RawCount:(*config.RawConfig)(0xc420412cb0), RawConfig:(*config.RawConfig)(0xc420412c40), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string(nil), Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachResourceConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [DEBUG] Resource state not found for "kops_cluster.aux_cluster": kops_cluster.aux_cluster
+2019/01/01 18:26:34 [DEBUG] Resource state not found for "aws_s3_bucket.kops_state": aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+2019/01/01 18:26:34 [TRACE] ProviderConfigTransformer: Starting for path: []
+2019/01/01 18:26:34 [TRACE] Attach provider request: []string{} aws
+2019/01/01 18:26:34 [TRACE] Attaching provider config: *config.ProviderConfig{Name:"aws", Alias:"", Version:"~> 1.45", RawConfig:(*config.RawConfig)(0xc420412af0)}
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ProviderConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+provider.aws - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [DEBUG] adding missing provider: kops
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.MissingProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [DEBUG] resource kops_cluster.aux_cluster using provider provider.kops
+2019/01/01 18:26:34 [DEBUG] resource aws_s3_bucket.kops_state using provider provider.aws
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.PruneProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ParentProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.graphTransformerMulti:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.MissingProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.graphTransformerMulti:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ModuleVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RemovedModuleTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "aws_s3_bucket.kops_state" references: []
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "provider.aws" references: []
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "provider.kops" references: []
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "kops_cluster.aux_cluster" references: [aws_s3_bucket.kops_state]
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.CountBoundaryTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.CloseProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.CloseProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TransitiveReductionTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeValidatableResource
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeValidatableResource
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:34 [DEBUG] Starting graph walk: walkValidate
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.aws"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.kops"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.kops (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.aws (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "root"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "root" waiting on "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "aws_s3_bucket.kops_state" waiting on "provider.aws"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "provider.kops"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "provider.kops (close)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "provider.aws (close)" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "root" waiting on "provider.kops (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "root" waiting on "provider.aws (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "meta.count-boundary (count boundary fixup)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "kops_cluster.aux_cluster", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "root", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "aws_s3_bucket.kops_state", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "provider.kops (close)", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "provider.aws (close)", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "meta.count-boundary (count boundary fixup)", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.aws"
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws': walking
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.kops"
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws': evaluating
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops': evaluating
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: provider.kops
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: provider.aws
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInitProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInitProvider
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: provider.kops
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: provider.aws
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] vertex 'root.aws_s3_bucket.kops_state': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.aws_s3_bucket.kops_state': evaluating
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateCount
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCountFixZeroOneBoundary
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] vertex 'root.aws_s3_bucket.kops_state': expanding/walking dynamic subgraph
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ResourceCountTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [DEBUG] Resource state not found for "aws_s3_bucket.kops_state": aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "aws_s3_bucket.kops_state" references: []
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] vertex 'root.aws_s3_bucket.kops_state': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.aws_s3_bucket.kops_state': evaluating
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateResourceSelfRef
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateResource
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] vertex 'root.kops_cluster.aux_cluster': walking
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.aws (close)"
+2019/01/01 18:26:34 [TRACE] vertex 'root.kops_cluster.aux_cluster': evaluating
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws (close)': walking
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws (close)': evaluating
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: provider.aws (close)
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCloseProvider
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: provider.aws (close)
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateCount
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCountFixZeroOneBoundary
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:34 [TRACE] vertex 'root.kops_cluster.aux_cluster': expanding/walking dynamic subgraph
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ResourceCountTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [DEBUG] Resource state not found for "kops_cluster.aux_cluster": kops_cluster.aux_cluster
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "kops_cluster.aux_cluster" references: []
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodeValidatableResourceInstance
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] vertex 'root.kops_cluster.aux_cluster': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.kops_cluster.aux_cluster': evaluating
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateResourceSelfRef
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalValidateResource
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.kops (close)"
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops (close)': walking
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:34 [TRACE] vertex 'root.meta.count-boundary (count boundary fixup)': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops (close)': evaluating
+2019/01/01 18:26:34 [TRACE] vertex 'root.meta.count-boundary (count boundary fixup)': evaluating
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: meta.count-boundary (count boundary fixup)
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCountFixZeroOneBoundaryGlobal
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: meta.count-boundary (count boundary fixup)
+2019/01/01 18:26:34 [TRACE] [walkValidate] Entering eval tree: provider.kops (close)
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalCloseProvider
+2019/01/01 18:26:34 [TRACE] [walkValidate] Exiting eval tree: provider.kops (close)
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "root"
+2019/01/01 18:26:34 [TRACE] vertex 'root.root': walking
+2019/01/01 18:26:34 [INFO] backend/local: apply calling Refresh
+2019/01/01 18:26:34 [INFO] terraform: building graph: GraphTypeRefresh
+2019/01/01 18:26:34 [TRACE] No managed resources in state during refresh, skipping managed resource transformer
+2019/01/01 18:26:34 [TRACE] ConfigTransformer: Starting for path: []
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ConfigTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OrphanResourceTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+2019/01/01 18:26:34 [TRACE] AttachResourceConfigTransformer: Beginning...
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachResourceConfigTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootVariableTransformer:
+
+2019/01/01 18:26:34 [TRACE] ProviderConfigTransformer: Starting for path: []
+2019/01/01 18:26:34 [TRACE] Attach provider request: []string{} aws
+2019/01/01 18:26:34 [TRACE] Attaching provider config: *config.ProviderConfig{Name:"aws", Alias:"", Version:"~> 1.45", RawConfig:(*config.RawConfig)(0xc420412af0)}
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ProviderConfigTransformer:
+
+provider.aws - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.MissingProviderTransformer:
+
+provider.aws - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ProviderTransformer:
+
+provider.aws - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [DEBUG] pruning unused provider provider.aws
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.PruneProviderTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ParentProviderTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.graphTransformerMulti:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.LocalTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OutputTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ModuleVariableTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.CloseProviderTransformer:
+
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootTransformer:
+
+root - terraform.graphNodeRoot
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TransitiveReductionTransformer:
+
+root - terraform.graphNodeRoot
+2019/01/01 18:26:34 [DEBUG] Starting graph walk: walkRefresh
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "root"
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "root"
+2019/01/01 18:26:34 [TRACE] vertex 'root.root': walking
+2019/01/01 18:26:34 [INFO] backend/local: apply calling Plan
+2019/01/01 18:26:34 [INFO] terraform: building graph: GraphTypePlan
+2019/01/01 18:26:34 [TRACE] ConfigTransformer: Starting for path: []
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.LocalTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OrphanResourceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.OrphanOutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [TRACE] AttachResourceConfigTransformer: Beginning...
+2019/01/01 18:26:34 [TRACE] AttachResourceConfigTransformer: Attach resource config request: kops_cluster.aux_cluster
+2019/01/01 18:26:34 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"aux_cluster", Type:"kops_cluster", RawCount:(*config.RawConfig)(0xc420412bd0), RawConfig:(*config.RawConfig)(0xc420412b60), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string{"aws_s3_bucket.kops_state"}, Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:34 [TRACE] AttachResourceConfigTransformer: Attach resource config request: aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"kops_state", Type:"aws_s3_bucket", RawCount:(*config.RawConfig)(0xc420412cb0), RawConfig:(*config.RawConfig)(0xc420412c40), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string(nil), Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachResourceConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [DEBUG] Resource state not found for "kops_cluster.aux_cluster": kops_cluster.aux_cluster
+2019/01/01 18:26:34 [DEBUG] Resource state not found for "aws_s3_bucket.kops_state": aws_s3_bucket.kops_state
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+2019/01/01 18:26:34 [TRACE] ProviderConfigTransformer: Starting for path: []
+2019/01/01 18:26:34 [TRACE] Attach provider request: []string{} aws
+2019/01/01 18:26:34 [TRACE] Attaching provider config: *config.ProviderConfig{Name:"aws", Alias:"", Version:"~> 1.45", RawConfig:(*config.RawConfig)(0xc420412af0)}
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ProviderConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+provider.aws - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [DEBUG] adding missing provider: kops
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.MissingProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [DEBUG] resource kops_cluster.aux_cluster using provider provider.kops
+2019/01/01 18:26:34 [DEBUG] resource aws_s3_bucket.kops_state using provider provider.aws
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.PruneProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ParentProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.graphTransformerMulti:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ModuleVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RemovedModuleTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "provider.aws" references: []
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "provider.kops" references: []
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "kops_cluster.aux_cluster" references: [aws_s3_bucket.kops_state]
+2019/01/01 18:26:34 [DEBUG] ReferenceTransformer: "aws_s3_bucket.kops_state" references: []
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.CountBoundaryTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.CloseProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.CloseProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.RootTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:34 [TRACE] Graph after step *terraform.TransitiveReductionTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodePlannableResource
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodePlannableResource
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodePlannableResource
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:34 [DEBUG] Starting graph walk: walkPlan
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.aws (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.kops (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "root"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.aws"
+2019/01/01 18:26:34 [TRACE] dag/walk: added new vertex: "provider.kops"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "root" waiting on "provider.aws (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "meta.count-boundary (count boundary fixup)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "provider.aws (close)" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "aws_s3_bucket.kops_state" waiting on "provider.aws"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "provider.kops (close)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "root" waiting on "provider.kops (close)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "root" waiting on "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "provider.kops"
+2019/01/01 18:26:34 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "provider.kops (close)", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "kops_cluster.aux_cluster", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "root", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "meta.count-boundary (count boundary fixup)", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "provider.aws (close)", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: dependencies changed for "aws_s3_bucket.kops_state", sending new deps
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.aws"
+2019/01/01 18:26:34 [TRACE] dag/walk: walking "provider.kops"
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops': walking
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.aws': evaluating
+2019/01/01 18:26:34 [TRACE] [walkPlan] Entering eval tree: provider.aws
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInitProvider
+2019/01/01 18:26:34 [TRACE] vertex 'root.provider.kops': evaluating
+2019/01/01 18:26:34 [TRACE] [walkPlan] Entering eval tree: provider.kops
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInitProvider
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalConfigProvider
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:34 [TRACE] root: eval: *terraform.EvalConfigProvider
+2019/01/01 18:26:34 [TRACE] [walkPlan] Exiting eval tree: provider.kops
+2019-01-01T18:26:34.105-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [INFO] No assume_role block read from configuration
+2019-01-01T18:26:34.105-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [INFO] Building AWS region structure
+2019-01-01T18:26:34.105-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [INFO] Building AWS auth structure
+2019-01-01T18:26:34.105-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [INFO] Setting AWS metadata API timeout to 100ms
+2019-01-01T18:26:34.480-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [INFO] Ignoring AWS metadata API endpoint at default location as it doesn't return any instance-id
+2019-01-01T18:26:34.481-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [INFO] AWS Auth provider used: "SharedCredentialsProvider"
+2019-01-01T18:26:34.481-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [INFO] Initializing DeviceFarm SDK connection
+2019-01-01T18:26:34.481-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:34 [DEBUG] Trying to get account information via sts:GetCallerIdentity
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: provider.aws
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "aws_s3_bucket.kops_state"
+2019/01/01 18:26:35 [TRACE] vertex 'root.aws_s3_bucket.kops_state': walking
+2019/01/01 18:26:35 [TRACE] vertex 'root.aws_s3_bucket.kops_state': evaluating
+2019/01/01 18:26:35 [TRACE] [walkPlan] Entering eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCountCheckComputed
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCountFixZeroOneBoundary
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:35 [TRACE] vertex 'root.aws_s3_bucket.kops_state': expanding/walking dynamic subgraph
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.ResourceCountTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] OrphanResourceCount: Starting...
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.OrphanResourceCountTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [DEBUG] Resource state not found for "aws_s3_bucket.kops_state": aws_s3_bucket.kops_state
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [DEBUG] ReferenceTransformer: "aws_s3_bucket.kops_state" references: []
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.RootTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] dag/walk: added new vertex: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "aws_s3_bucket.kops_state"
+2019/01/01 18:26:35 [TRACE] vertex 'root.aws_s3_bucket.kops_state': walking
+2019/01/01 18:26:35 [TRACE] vertex 'root.aws_s3_bucket.kops_state': evaluating
+2019/01/01 18:26:35 [TRACE] [walkPlan] Entering eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalValidateResource
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalReadState
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalDiff
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCheckPreventDestroy
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalWriteState
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalWriteDiff
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "provider.aws (close)"
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "kops_cluster.aux_cluster"
+2019/01/01 18:26:35 [TRACE] vertex 'root.provider.aws (close)': walking
+2019/01/01 18:26:35 [TRACE] vertex 'root.kops_cluster.aux_cluster': walking
+2019/01/01 18:26:35 [TRACE] vertex 'root.provider.aws (close)': evaluating
+2019/01/01 18:26:35 [TRACE] [walkPlan] Entering eval tree: provider.aws (close)
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCloseProvider
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: provider.aws (close)
+2019/01/01 18:26:35 [TRACE] vertex 'root.kops_cluster.aux_cluster': evaluating
+2019/01/01 18:26:35 [TRACE] [walkPlan] Entering eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCountCheckComputed
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCountFixZeroOneBoundary
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:35 [TRACE] vertex 'root.kops_cluster.aux_cluster': expanding/walking dynamic subgraph
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.ResourceCountTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] OrphanResourceCount: Starting...
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.OrphanResourceCountTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [DEBUG] Resource state not found for "kops_cluster.aux_cluster": kops_cluster.aux_cluster
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [DEBUG] ReferenceTransformer: "kops_cluster.aux_cluster" references: []
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] Graph after step *terraform.RootTransformer:
+
+kops_cluster.aux_cluster - *terraform.NodePlannableResourceInstance
+2019/01/01 18:26:35 [TRACE] dag/walk: added new vertex: "kops_cluster.aux_cluster"
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "kops_cluster.aux_cluster"
+2019/01/01 18:26:35 [TRACE] vertex 'root.kops_cluster.aux_cluster': walking
+2019/01/01 18:26:35 [TRACE] vertex 'root.kops_cluster.aux_cluster': evaluating
+2019/01/01 18:26:35 [TRACE] [walkPlan] Entering eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalValidateResource
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalReadState
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalDiff
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCheckPreventDestroy
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalWriteState
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalWriteDiff
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:35 [TRACE] vertex 'root.meta.count-boundary (count boundary fixup)': walking
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "provider.kops (close)"
+2019/01/01 18:26:35 [TRACE] vertex 'root.provider.kops (close)': walking
+2019/01/01 18:26:35 [TRACE] vertex 'root.meta.count-boundary (count boundary fixup)': evaluating
+2019/01/01 18:26:35 [TRACE] vertex 'root.provider.kops (close)': evaluating
+2019/01/01 18:26:35 [TRACE] [walkPlan] Entering eval tree: provider.kops (close)
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCloseProvider
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: provider.kops (close)
+2019/01/01 18:26:35 [TRACE] [walkPlan] Entering eval tree: meta.count-boundary (count boundary fixup)
+2019/01/01 18:26:35 [TRACE] root: eval: *terraform.EvalCountFixZeroOneBoundaryGlobal
+2019/01/01 18:26:35 [TRACE] [walkPlan] Exiting eval tree: meta.count-boundary (count boundary fixup)
+2019/01/01 18:26:35 [TRACE] dag/walk: walking "root"
+2019/01/01 18:26:35 [TRACE] vertex 'root.root': walking
+2019/01/01 18:26:35 [DEBUG] command: asking for input: "Do you want to perform these actions?"
+2019/01/01 18:26:36 [INFO] terraform: building graph: GraphTypeApply
+2019/01/01 18:26:36 [TRACE] DiffTransformer: starting
+2019/01/01 18:26:36 [TRACE] DiffTransformer: Module: CREATE: aws_s3_bucket.kops_state
+  acceleration_status:                                                                                   "" => "<computed>"
+  acl:                                                                                                   "" => "private"
+  arn:                                                                                                   "" => "<computed>"
+  bucket:                                                                                                "" => "k8s.kaladaopuiyo.com" (forces new resource)
+  bucket_domain_name:                                                                                    "" => "<computed>"
+  bucket_regional_domain_name:                                                                           "" => "<computed>"
+  force_destroy:                                                                                         "" => "true"
+  hosted_zone_id:                                                                                        "" => "<computed>"
+  region:                                                                                                "" => "us-east-1"
+  request_payer:                                                                                         "" => "<computed>"
+  server_side_encryption_configuration.#:                                                                "" => "1"
+  server_side_encryption_configuration.0.rule.#:                                                         "" => "1"
+  server_side_encryption_configuration.0.rule.0.apply_server_side_encryption_by_default.#:               "" => "1"
+  server_side_encryption_configuration.0.rule.0.apply_server_side_encryption_by_default.0.sse_algorithm: "" => "AES256"
+  versioning.#:                                                                                          "" => "1"
+  versioning.0.enabled:                                                                                  "" => "true"
+  versioning.0.mfa_delete:                                                                               "" => "false"
+  website_domain:                                                                                        "" => "<computed>"
+  website_endpoint:                                                                                      "" => "<computed>"
+CREATE: kops_cluster.aux_cluster
+  dry_run:        "" => "true"
+  master_zones.#: "" => "1" (forces new resource)
+  master_zones.0: "" => "us-east-1a" (forces new resource)
+  name:           "" => "green.k8s.urbanradikal.com" (forces new resource)
+  node_zones.#:   "" => "1" (forces new resource)
+  node_zones.0:   "" => "us-east-1a" (forces new resource)
+  ssh_public_key: "" => "~/.ssh/kalada-admin.pub" (forces new resource)
+  state_store:    "" => "s3://k8s.kaladaopuiyo.com" (forces new resource)
+2019/01/01 18:26:36 [TRACE] DiffTransformer: Resource "aws_s3_bucket.kops_state": *terraform.InstanceDiff{mu:sync.Mutex{state:0, sema:0x0}, Attributes:map[string]*terraform.ResourceAttrDiff{"acceleration_status":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "request_payer":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "website_endpoint":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "versioning.0.enabled":*terraform.ResourceAttrDiff{Old:"", New:"true", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "acl":*terraform.ResourceAttrDiff{Old:"", New:"private", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "arn":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "versioning.0.mfa_delete":*terraform.ResourceAttrDiff{Old:"", New:"false", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "force_destroy":*terraform.ResourceAttrDiff{Old:"", New:"true", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "server_side_encryption_configuration.0.rule.#":*terraform.ResourceAttrDiff{Old:"", New:"1", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "bucket_domain_name":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "versioning.#":*terraform.ResourceAttrDiff{Old:"", New:"1", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "server_side_encryption_configuration.0.rule.0.apply_server_side_encryption_by_default.0.sse_algorithm":*terraform.ResourceAttrDiff{Old:"", New:"AES256", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "server_side_encryption_configuration.#":*terraform.ResourceAttrDiff{Old:"", New:"1", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "server_side_encryption_configuration.0.rule.0.apply_server_side_encryption_by_default.#":*terraform.ResourceAttrDiff{Old:"", New:"1", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "hosted_zone_id":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "website_domain":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "id":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x2}, "region":*terraform.ResourceAttrDiff{Old:"", New:"us-east-1", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "bucket_regional_domain_name":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "bucket":*terraform.ResourceAttrDiff{Old:"", New:"k8s.kaladaopuiyo.com", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}}, Destroy:false, DestroyDeposed:false, DestroyTainted:false, Meta:map[string]interface {}(nil)}
+2019/01/01 18:26:36 [TRACE] DiffTransformer: Resource "kops_cluster.aux_cluster": *terraform.InstanceDiff{mu:sync.Mutex{state:0, sema:0x0}, Attributes:map[string]*terraform.ResourceAttrDiff{"dry_run":*terraform.ResourceAttrDiff{Old:"", New:"true", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:false, Sensitive:false, Type:0x0}, "ssh_public_key":*terraform.ResourceAttrDiff{Old:"", New:"~/.ssh/kalada-admin.pub", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}, "node_zones.0":*terraform.ResourceAttrDiff{Old:"", New:"us-east-1a", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}, "id":*terraform.ResourceAttrDiff{Old:"", New:"", NewComputed:true, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x2}, "state_store":*terraform.ResourceAttrDiff{Old:"", New:"s3://k8s.kaladaopuiyo.com", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}, "master_zones.#":*terraform.ResourceAttrDiff{Old:"", New:"1", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}, "master_zones.0":*terraform.ResourceAttrDiff{Old:"", New:"us-east-1a", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}, "name":*terraform.ResourceAttrDiff{Old:"", New:"green.k8s.urbanradikal.com", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}, "node_zones.#":*terraform.ResourceAttrDiff{Old:"", New:"1", NewComputed:false, NewRemoved:false, NewExtra:interface {}(nil), RequiresNew:true, Sensitive:false, Type:0x0}}, Destroy:false, DestroyDeposed:false, DestroyTainted:false, Meta:map[string]interface {}(nil)}
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.DiffTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.OrphanOutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+2019/01/01 18:26:36 [TRACE] AttachResourceConfigTransformer: Beginning...
+2019/01/01 18:26:36 [TRACE] AttachResourceConfigTransformer: Attach resource config request: aws_s3_bucket.kops_state
+2019/01/01 18:26:36 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"kops_state", Type:"aws_s3_bucket", RawCount:(*config.RawConfig)(0xc420412cb0), RawConfig:(*config.RawConfig)(0xc420412c40), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string(nil), Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:36 [TRACE] AttachResourceConfigTransformer: Attach resource config request: kops_cluster.aux_cluster
+2019/01/01 18:26:36 [TRACE] Attaching resource config: &config.Resource{Mode:0, Name:"aux_cluster", Type:"kops_cluster", RawCount:(*config.RawConfig)(0xc420412bd0), RawConfig:(*config.RawConfig)(0xc420412b60), Provisioners:[]*config.Provisioner(nil), Provider:"", DependsOn:[]string{"aws_s3_bucket.kops_state"}, Lifecycle:config.ResourceLifecycle{CreateBeforeDestroy:false, PreventDestroy:false, IgnoreChanges:[]string(nil)}}
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.AttachResourceConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+2019/01/01 18:26:36 [DEBUG] Resource state not found for "kops_cluster.aux_cluster": kops_cluster.aux_cluster
+2019/01/01 18:26:36 [DEBUG] Resource state not found for "aws_s3_bucket.kops_state": aws_s3_bucket.kops_state
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.AttachStateTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+2019/01/01 18:26:36 [TRACE] ProviderConfigTransformer: Starting for path: []
+2019/01/01 18:26:36 [TRACE] Attach provider request: []string{} aws
+2019/01/01 18:26:36 [TRACE] Attaching provider config: *config.ProviderConfig{Name:"aws", Alias:"", Version:"~> 1.45", RawConfig:(*config.RawConfig)(0xc420412af0)}
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.ProviderConfigTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+provider.aws - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [DEBUG] adding missing provider: kops
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.MissingProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [DEBUG] resource aws_s3_bucket.kops_state using provider provider.aws
+2019/01/01 18:26:36 [DEBUG] resource kops_cluster.aux_cluster using provider provider.kops
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.ProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.PruneProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.ParentProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.graphTransformerMulti:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] DestroyEdgeTransformer: Beginning destroy edge transformation...
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.DestroyEdgeTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] CBDEdgeTransformer: Beginning CBD transformation...
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.CBDEdgeTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.MissingProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.ProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.RootVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.LocalTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.OutputTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.ModuleVariableTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.RemovedModuleTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [DEBUG] ReferenceTransformer: "aws_s3_bucket.kops_state" references: []
+2019/01/01 18:26:36 [DEBUG] ReferenceTransformer: "kops_cluster.aux_cluster" references: [aws_s3_bucket.kops_state]
+2019/01/01 18:26:36 [DEBUG] ReferenceTransformer: "provider.aws" references: []
+2019/01/01 18:26:36 [DEBUG] ReferenceTransformer: "provider.kops" references: []
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.ReferenceTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.CountBoundaryTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.TargetsTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.CloseProviderTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.CloseProvisionerTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.RootTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+  provider.kops - *terraform.NodeApplyableProvider
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:36 [TRACE] Graph after step *terraform.TransitiveReductionTransformer:
+
+aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.aws - *terraform.NodeApplyableProvider
+kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+  provider.kops - *terraform.NodeApplyableProvider
+meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+provider.aws - *terraform.NodeApplyableProvider
+provider.aws (close) - *terraform.graphNodeCloseProvider
+  aws_s3_bucket.kops_state - *terraform.NodeApplyableResource
+provider.kops - *terraform.NodeApplyableProvider
+provider.kops (close) - *terraform.graphNodeCloseProvider
+  kops_cluster.aux_cluster - *terraform.NodeApplyableResource
+root - terraform.graphNodeRoot
+  meta.count-boundary (count boundary fixup) - *terraform.NodeCountBoundary
+  provider.aws (close) - *terraform.graphNodeCloseProvider
+  provider.kops (close) - *terraform.graphNodeCloseProvider
+2019/01/01 18:26:36 [DEBUG] Starting graph walk: walkApply
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "provider.aws"
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "provider.kops"
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "provider.aws (close)"
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "provider.kops (close)"
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "root"
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:36 [TRACE] dag/walk: added new vertex: "kops_cluster.aux_cluster"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "provider.kops (close)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "root" waiting on "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "root" waiting on "provider.aws (close)"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "meta.count-boundary (count boundary fixup)" waiting on "kops_cluster.aux_cluster"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "aws_s3_bucket.kops_state" waiting on "provider.aws"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "kops_cluster.aux_cluster" waiting on "provider.kops"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "root" waiting on "provider.kops (close)"
+2019/01/01 18:26:36 [TRACE] dag/walk: added edge: "provider.aws (close)" waiting on "aws_s3_bucket.kops_state"
+2019/01/01 18:26:36 [TRACE] dag/walk: dependencies changed for "provider.kops (close)", sending new deps
+2019/01/01 18:26:36 [TRACE] dag/walk: dependencies changed for "root", sending new deps
+2019/01/01 18:26:36 [TRACE] dag/walk: dependencies changed for "meta.count-boundary (count boundary fixup)", sending new deps
+2019/01/01 18:26:36 [TRACE] dag/walk: dependencies changed for "kops_cluster.aux_cluster", sending new deps
+2019/01/01 18:26:36 [TRACE] dag/walk: dependencies changed for "aws_s3_bucket.kops_state", sending new deps
+2019/01/01 18:26:36 [TRACE] dag/walk: dependencies changed for "provider.aws (close)", sending new deps
+2019/01/01 18:26:36 [TRACE] dag/walk: walking "provider.kops"
+2019/01/01 18:26:36 [TRACE] vertex 'root.provider.kops': walking
+2019/01/01 18:26:36 [TRACE] dag/walk: walking "provider.aws"
+2019/01/01 18:26:36 [TRACE] vertex 'root.provider.aws': walking
+2019/01/01 18:26:36 [TRACE] vertex 'root.provider.kops': evaluating
+2019/01/01 18:26:36 [TRACE] [walkApply] Entering eval tree: provider.kops
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalInitProvider
+2019/01/01 18:26:36 [TRACE] vertex 'root.provider.aws': evaluating
+2019/01/01 18:26:36 [TRACE] [walkApply] Entering eval tree: provider.aws
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalInitProvider
+2019/01/01 18:26:36 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:36 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:36 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:36 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalInterpolateProvider
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalConfigProvider
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalBuildProviderConfig
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalOpFilter
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:36 [TRACE] root: eval: *terraform.EvalConfigProvider
+2019/01/01 18:26:37 [TRACE] [walkApply] Exiting eval tree: provider.kops
+2019-01-01T18:26:37.000-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [INFO] No assume_role block read from configuration
+2019-01-01T18:26:37.000-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [INFO] Building AWS region structure
+2019-01-01T18:26:37.000-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [INFO] Building AWS auth structure
+2019-01-01T18:26:37.000-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [INFO] Setting AWS metadata API timeout to 100ms
+2019-01-01T18:26:37.321-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [INFO] Ignoring AWS metadata API endpoint at default location as it doesn't return any instance-id
+2019-01-01T18:26:37.321-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [INFO] AWS Auth provider used: "SharedCredentialsProvider"
+2019-01-01T18:26:37.322-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [INFO] Initializing DeviceFarm SDK connection
+2019-01-01T18:26:37.322-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [DEBUG] Trying to get account information via sts:GetCallerIdentity
+2019/01/01 18:26:37 [TRACE] [walkApply] Exiting eval tree: provider.aws
+2019/01/01 18:26:37 [TRACE] dag/walk: walking "aws_s3_bucket.kops_state"
+2019/01/01 18:26:37 [TRACE] vertex 'root.aws_s3_bucket.kops_state': walking
+2019/01/01 18:26:37 [TRACE] vertex 'root.aws_s3_bucket.kops_state': evaluating
+2019/01/01 18:26:37 [TRACE] [walkApply] Entering eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalInstanceInfo
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalReadDiff
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:37 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalReadState
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalValidateResource
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalDiff
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalReadDiff
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalCompareDiff
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalReadState
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalApplyPre
+2019/01/01 18:26:37 [TRACE] root: eval: *terraform.EvalApply
+2019/01/01 18:26:37 [DEBUG] apply: aws_s3_bucket.kops_state: executing Apply
+2019-01-01T18:26:37.913-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [DEBUG] S3 bucket create: k8s.kaladaopuiyo.com, ACL: private
+2019-01-01T18:26:37.913-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [DEBUG] S3 bucket create: k8s.kaladaopuiyo.com, using region: us-east-1
+2019-01-01T18:26:37.913-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:37.913-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:37 [DEBUG] Trying to create new S3 bucket: "k8s.kaladaopuiyo.com"
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:38 [DEBUG] S3 put bucket versioning: {
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:   Bucket: "k8s.kaladaopuiyo.com",
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:   VersioningConfiguration: {
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:     MFADelete: "Disabled",
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:     Status: "Enabled"
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:   }
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: }
+2019-01-01T18:26:38.482-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:38 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:38.828-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:38 [DEBUG] S3 put bucket replication configuration: {
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:   Bucket: "k8s.kaladaopuiyo.com",
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:   ServerSideEncryptionConfiguration: {
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:     Rules: [{
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:         ApplyServerSideEncryptionByDefault: {
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:           SSEAlgorithm: "AES256"
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:         }
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:       }]
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4:   }
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: }
+2019-01-01T18:26:38.829-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:38 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:39.490-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:39 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:39.788-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:39 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:40.049-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:40 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:40.313-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:40 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:40.568-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:40 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:40.841-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:40 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:41.121-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:41 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:41.384-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:41 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:41.639-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:41 [DEBUG] Waiting for state to become: [success]
+2019-01-01T18:26:41.873-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:41 [DEBUG] Waiting for state to become: [success]
+2019/01/01 18:26:41 [TRACE] dag/walk: vertex "provider.aws (close)", waiting for: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:41 [TRACE] dag/walk: vertex "root", waiting for: "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:41 [TRACE] dag/walk: vertex "kops_cluster.aux_cluster", waiting for: "aws_s3_bucket.kops_state"
+2019/01/01 18:26:41 [TRACE] dag/walk: vertex "provider.kops (close)", waiting for: "kops_cluster.aux_cluster"
+2019/01/01 18:26:41 [TRACE] dag/walk: vertex "meta.count-boundary (count boundary fixup)", waiting for: "kops_cluster.aux_cluster"
+2019-01-01T18:26:42.141-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:42 [DEBUG] Waiting for state to become: [success]
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalWriteState
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalApplyProvisioners
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalWriteState
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalWriteDiff
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalApplyPost
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalUpdateStateHook
+2019/01/01 18:26:42 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:42 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:42 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:42 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:42 [TRACE] [walkApply] Exiting eval tree: aws_s3_bucket.kops_state
+2019/01/01 18:26:42 [TRACE] dag/walk: walking "provider.aws (close)"
+2019/01/01 18:26:42 [TRACE] vertex 'root.provider.aws (close)': walking
+2019/01/01 18:26:42 [TRACE] dag/walk: walking "kops_cluster.aux_cluster"
+2019/01/01 18:26:42 [TRACE] vertex 'root.kops_cluster.aux_cluster': walking
+2019/01/01 18:26:42 [TRACE] vertex 'root.provider.aws (close)': evaluating
+2019/01/01 18:26:42 [TRACE] [walkApply] Entering eval tree: provider.aws (close)
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalCloseProvider
+2019/01/01 18:26:42 [TRACE] [walkApply] Exiting eval tree: provider.aws (close)
+2019/01/01 18:26:42 [TRACE] vertex 'root.kops_cluster.aux_cluster': evaluating
+2019/01/01 18:26:42 [TRACE] [walkApply] Entering eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalSequence
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalInstanceInfo
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalReadDiff
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:42 [TRACE] root: eval: terraform.EvalNoop
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalInterpolate
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalReadState
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalValidateResource
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalDiff
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalReadDiff
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalCompareDiff
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalGetProvider
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalReadState
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalApplyPre
+2019/01/01 18:26:42 [TRACE] root: eval: *terraform.EvalApply
+2019/01/01 18:26:42 [DEBUG] apply: kops_cluster.aux_cluster: executing Apply
+2019/01/01 18:26:46 [TRACE] dag/walk: vertex "root", waiting for: "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:46 [TRACE] dag/walk: vertex "provider.kops (close)", waiting for: "kops_cluster.aux_cluster"
+2019/01/01 18:26:46 [TRACE] dag/walk: vertex "meta.count-boundary (count boundary fixup)", waiting for: "kops_cluster.aux_cluster"
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: panic: runtime error: invalid memory address or nil pointer dereference
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x34bddfd]
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: 
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: goroutine 438 [running]:
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/pkg/model/iam.(*PolicyBuilder).BuildAWSPolicyMaster(0xc000f93260, 0x60, 0x58, 0x42282a0)
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/pkg/model/iam/iam_builder.go:157 +0xdd
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/pkg/model/iam.(*PolicyBuilder).BuildAWSPolicy(0xc000f93260, 0xc000f93260, 0x3f694a0, 0xc000d5d3d0)
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/pkg/model/iam/iam_builder.go:138 +0x37e
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/pkg/model/iam.(*PolicyResource).Open(0xc000f51ed0, 0x0, 0xc00029a000, 0x82, 0x7e5e440)
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/pkg/model/iam/iam_builder.go:493 +0xba
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi.CopyResource(0x4946900, 0xc0004f0c40, 0x4948120, 0xc000f51ed0, 0x0, 0x0, 0x0)
+2019-01-01T18:26:49.496-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/resources.go:85 +0x60
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi.ResourceAsString(0x4948120, 0xc000f51ed0, 0x100d8df, 0xc0018a5820, 0x10c202c, 0x43a3b80)
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/resources.go:103 +0x5f
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi/cloudup/awstasks.(*IAMRolePolicy).policyDocumentString(0xc0009e8ba0, 0x38, 0x38, 0xc000f0ff80, 0x0)
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/cloudup/awstasks/iamrolepolicy.go:191 +0x3d
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi/cloudup/awstasks.(*IAMRolePolicy).ShouldCreate(0xc0009e8ba0, 0x0, 0xc0009e8ba0, 0xc00056dd70, 0x0, 0x0, 0x0)
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/cloudup/awstasks/iamrolepolicy.go:107 +0x2f
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: reflect.Value.call(0x43a3b80, 0xc0009e8ba0, 0x2e13, 0x44f627a, 0x4, 0xc000f93200, 0x3, 0x4, 0xc0008cb4e0, 0x13, ...)
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: 	/usr/local/opt/go/libexec/src/reflect/value.go:447 +0x454
+2019-01-01T18:26:49.497-0600 [DEBUG] plugin.terraform-provider-kops: reflect.Value.Call(0x43a3b80, 0xc0009e8ba0, 0x2e13, 0xc000f93200, 0x3, 0x4, 0xc0009e8ba0, 0x2e13, 0xc000db9380)
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: 	/usr/local/opt/go/libexec/src/reflect/value.go:308 +0xa4
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/util/pkg/reflectutils.InvokeMethod(0x43a3b80, 0xc0009e8ba0, 0x4504358, 0xc, 0xc0018a5db0, 0x3, 0x3, 0x4503620, 0xc, 0xc0018a5db0, ...)
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/util/pkg/reflectutils/walk.go:76 +0x3e3
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi.invokeShouldCreate(0x4948640, 0x0, 0x4948640, 0xc0009e8ba0, 0x4948640, 0xc00056dd70, 0x0, 0x0, 0xc000dd0550)
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/default_methods.go:139 +0x118
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi.DefaultDeltaRunMethod(0x4948640, 0xc0009e8ba0, 0xc0008f1540, 0x1, 0xc000dd0560)
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/default_methods.go:73 +0x4c2
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi/cloudup/awstasks.(*IAMRolePolicy).Run(0xc0009e8ba0, 0xc0008f1540, 0x16, 0xc0017daf78)
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/cloudup/awstasks/iamrolepolicy.go:94 +0x41
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: k8s.io/kops/upup/pkg/fi.(*executor).forkJoin.func1(0xc000a79980, 0x18, 0x18, 0xc000e0c590, 0xc000df6620, 0xc0004f6380, 0xa)
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/executor.go:179 +0x1c8
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: created by k8s.io/kops/upup/pkg/fi.(*executor).forkJoin
+2019-01-01T18:26:49.498-0600 [DEBUG] plugin.terraform-provider-kops: 	/Users/kalada/go-projects/src/k8s.io/kops/upup/pkg/fi/executor.go:175 +0x117
+2019/01/01 18:26:49 [TRACE] root: eval: *terraform.EvalWriteState
+2019/01/01 18:26:49 [TRACE] root: eval: *terraform.EvalApplyProvisioners
+2019/01/01 18:26:49 [TRACE] root: eval: *terraform.EvalIf
+2019/01/01 18:26:49 [TRACE] root: eval: *terraform.EvalWriteState
+2019/01/01 18:26:49 [TRACE] root: eval: *terraform.EvalWriteDiff
+2019/01/01 18:26:49 [TRACE] root: eval: *terraform.EvalApplyPost
+2019/01/01 18:26:49 [ERROR] root: eval: *terraform.EvalApplyPost, err: 1 error(s) occurred:
+
+* kops_cluster.aux_cluster: unexpected EOF
+2019/01/01 18:26:49 [ERROR] root: eval: *terraform.EvalSequence, err: 1 error(s) occurred:
+
+* kops_cluster.aux_cluster: unexpected EOF
+2019/01/01 18:26:49 [TRACE] [walkApply] Exiting eval tree: kops_cluster.aux_cluster
+2019/01/01 18:26:49 [TRACE] dag/walk: upstream errored, not walking "meta.count-boundary (count boundary fixup)"
+2019/01/01 18:26:49 [TRACE] dag/walk: upstream errored, not walking "provider.kops (close)"
+2019/01/01 18:26:49 [TRACE] dag/walk: upstream errored, not walking "root"
+2019/01/01 18:26:49 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:49 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019/01/01 18:26:49 [TRACE] Preserving existing state lineage "0274e85b-2794-024f-4068-ca716f1759c0"
+2019-01-01T18:26:49.505-0600 [DEBUG] plugin: plugin process exited: path=/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/terraform-provider-kops
+2019/01/01 18:26:49 [DEBUG] plugin: waiting for all plugin processes to complete...
+2019-01-01T18:26:49.506-0600 [WARN ] plugin: error closing client during Kill: err="connection is shut down"
+2019-01-01T18:26:49.506-0600 [DEBUG] plugin.terraform-provider-aws_v1.54.0_x4: 2019/01/01 18:26:49 [ERR] plugin: plugin server: accept unix /var/folders/k_/7_l6k6tx40lc_ws3nmf3bkvc0000gn/T/plugin485095475: use of closed network connection
+2019-01-01T18:26:49.508-0600 [DEBUG] plugin: plugin process exited: path=/Users/kalada/go-projects/src/github.com/kaladaOpuiyo/terraform-provider-kops/.terraform/plugins/darwin_amd64/terraform-provider-aws_v1.54.0_x4
