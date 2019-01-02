@@ -108,10 +108,14 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	cluster.ObjectMeta.Name = clusterName
 
 	cluster.Spec = api.ClusterSpec{
-		Channel:       "stable",
-		CloudProvider: "aws",
-		ConfigBase:    registryBase.Join(cluster.ObjectMeta.Name).Path(),
-		Topology:      &api.TopologySpec{},
+		Channel:             "stable",
+		CloudProvider:       "aws",
+		ConfigBase:          registryBase.Join(cluster.ObjectMeta.Name).Path(),
+		KubernetesAPIAccess: []string{"0.0.0.0/0"},
+		KubernetesVersion:   "v1.11.5",
+		SSHAccess:           []string{"0.0.0.0/0"},
+		Topology:            &api.TopologySpec{},
+		NetworkCIDR:         "10.0.0.0/16",
 	}
 	cluster.Spec.IAM = &api.IAMSpec{
 		AllowContainerRegistry: true,
@@ -119,12 +123,25 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 	//**********************************************************
 	// These will be added to resource schema, here for testing
-	cluster.Spec.Topology.Masters = api.TopologyPublic
-	cluster.Spec.Topology.Nodes = api.TopologyPublic
+
+	cluster.Spec.API = &api.AccessSpec{}
+	cluster.Spec.API.DNS = &api.DNSAccessSpec{}
+	cluster.Spec.Authorization = &api.AuthorizationSpec{}
+	cluster.Spec.Authorization.RBAC = &api.RBACAuthorizationSpec{}
+	cluster.Spec.Networking = &api.NetworkingSpec{}
+	// Will make networking selectable... eventually :)
+	cluster.Spec.Networking.Calico = &api.CalicoNetworkingSpec{}
+	cluster.Spec.Networking.Calico.MajorVersion = "v3"
 	cluster.Spec.Topology.DNS = &api.DNSSpec{}
 	cluster.Spec.Topology.DNS.Type = api.DNSTypePublic
-	cluster.Spec.SSHAccess = []string{"0.0.0.0/0"}
-	cluster.Spec.KubernetesAPIAccess = []string{"0.0.0.0/0"}
+	cluster.Spec.Topology.Masters = api.TopologyPublic
+	cluster.Spec.Topology.Nodes = api.TopologyPublic
+
+	cluster.Spec.Kubelet = &api.KubeletConfigSpec{
+		AnonymousAuth:              fi.Bool(false),
+		AuthenticationTokenWebhook: fi.Bool(true),
+		AuthorizationMode:          "Webhook",
+	}
 	//**********************************************************
 
 	for _, nodeZone := range nodeZones {
@@ -137,12 +154,13 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	for _, etcdClusterName := range cloudup.EtcdClusters {
 		etcdCluster := &api.EtcdClusterSpec{
-			Name: etcdClusterName,
+			Name:    etcdClusterName,
+			Version: "3.2.24",
 		}
 		for _, masterZone := range masterZones {
 			etcdMember := &api.EtcdMemberSpec{
 				Name:          masterZone,
-				InstanceGroup: fi.String("master"),
+				InstanceGroup: fi.String("master-" + masterZone),
 			}
 			etcdCluster.Members = append(etcdCluster.Members, etcdMember)
 		}
@@ -158,34 +176,55 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		if err != nil {
 			return err
 		}
-	}
 
-	// Create master ig
+	}
 	{
-		ig := &api.InstanceGroup{}
-		ig.ObjectMeta.Name = "master"
-		ig.Spec = api.InstanceGroupSpec{
-			Role:    api.InstanceGroupRoleMaster,
-			Subnets: masterZones,
+		// Create master ig, Test only
+		masterCount := 1
+		masters := []*api.InstanceGroup{}
+
+		for i := 0; i < masterCount; i++ {
+			master := &api.InstanceGroup{}
+			master.ObjectMeta.Name = "master-" + masterZones[i]
+			master.Spec = api.InstanceGroupSpec{
+				Role:           api.InstanceGroupRoleMaster,
+				Subnets:        masterZones,
+				Image:          "ami-03b850a018c8cd25e",
+				MachineType:    "t2.medium",
+				RootVolumeSize: fi.Int32(20),
+			}
+
+			_, err := clientset.InstanceGroupsFor(cluster).Create(master)
+			if err != nil {
+				return err
+			}
+
+			masters = append(masters, master)
 		}
-		_, err := clientset.InstanceGroupsFor(cluster).Create(ig)
+
+	}
+	{
+		// Create node ig,Testing only
+		nodes := &api.InstanceGroup{}
+
+		nodes.ObjectMeta.Name = "nodes"
+		nodes.Spec = api.InstanceGroupSpec{
+			Image:          "ami-03b850a018c8cd25e",
+			MachineType:    "t2.medium",
+			MaxSize:        fi.Int32(5),
+			MinSize:        fi.Int32(2),
+			Role:           api.InstanceGroupRoleNode,
+			RootVolumeSize: fi.Int32(20),
+			Subnets:        nodeZones,
+		}
+
+		_, err := clientset.InstanceGroupsFor(cluster).Create(nodes)
 		if err != nil {
 			return err
 		}
+
 	}
 
-	// Create node ig
-
-	ig := &api.InstanceGroup{}
-	ig.ObjectMeta.Name = "nodes"
-	ig.Spec = api.InstanceGroupSpec{
-		Role:    api.InstanceGroupRoleNode,
-		Subnets: nodeZones,
-	}
-
-	if _, err := clientset.InstanceGroupsFor(cluster).Create(ig); err != nil {
-		return err
-	}
 	{
 		sshCredentialStore, err := clientset.SSHCredentialStore(cluster)
 		if err != nil {
@@ -223,7 +262,9 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-	conf, err := kubeconfig.BuildKubecfg(cluster, keyStore, secretStore, &commands.CloudDiscoveryStatusStore{})
+
+	conf, err := kubeconfig.BuildKubecfg(cluster, keyStore, secretStore,
+		&commands.CloudDiscoveryStatusStore{})
 	if err != nil {
 		return err
 	}

@@ -2,7 +2,15 @@ provider "aws" {
   region  = "us-east-1"
   version = "~> 1.45"
 }
+provider "helm" {
+  debug           = "true"
+  enable_tls      = "false"
+  install_tiller  = "true"
+  namespace       = "kube-system"
+  service_account = "tiller"
 
+  kubernetes {}
+}
 
 resource "kops_cluster" "aux_cluster" {
 
