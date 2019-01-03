@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strconv"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	api "k8s.io/kops/pkg/apis/kops"
@@ -26,12 +27,39 @@ func resourceKopsCluster() *schema.Resource {
 		Delete: resourceKopsDelete,
 
 		Schema: map[string]*schema.Schema{
+			"cloud": {
+				Type:        schema.TypeString,
+				Description: "Name of Cloud Provider",
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "aws",
+			},
+			"image": {
+				Type:        schema.TypeString,
+				Description: "AMI Image",
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "ami-03b850a018c8cd25e",
+			},
+			"master_size": {
+				Type:        schema.TypeString,
+				Description: "Master Nodes Instances Size e.g. t2.medium",
+				Required:    true,
+				ForceNew:    true,
+			},
+			"node_size": {
+				Type:        schema.TypeString,
+				Description: "Worker Nodes Instances Size e.g. t2.medium",
+				Required:    true,
+				ForceNew:    true,
+			},
 			"name": {
 				Type:        schema.TypeString,
 				Description: "Name of Cluster",
 				Required:    true,
 				ForceNew:    true,
 			},
+
 			"state_store": {
 				Type:        schema.TypeString,
 				Description: "State Store",
@@ -44,9 +72,59 @@ func resourceKopsCluster() *schema.Resource {
 				Optional:    true,
 				Default:     true,
 			},
+			"master_count": {
+				Type:        schema.TypeInt,
+				Description: "Master Count",
+				ForceNew:    true,
+				Required:    true,
+			},
+			"master_volume_size": {
+				Type:        schema.TypeInt,
+				Description: "Master Volume Size",
+				ForceNew:    true,
+				Required:    true,
+			},
+			"node_volume_size": {
+				Type:        schema.TypeInt,
+				Description: "Node Volume Size",
+				ForceNew:    true,
+				Required:    true,
+			},
+			"node_max_size": {
+				Type:        schema.TypeInt,
+				Description: "Node Max Size",
+				ForceNew:    true,
+				Required:    true,
+			},
+			"node_min_size": {
+				Type:        schema.TypeInt,
+				Description: "Node Min Size",
+				ForceNew:    true,
+				Required:    true,
+			},
+			"etcd_version": {
+				Type:        schema.TypeString,
+				Description: "etcd version",
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "3.2.24",
+			},
+			"k8s_version": {
+				Type:        schema.TypeString,
+				Description: "k8s version",
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "v1.11.5",
+			},
 			"ssh_public_key": {
 				Type:        schema.TypeString,
 				Description: "ssh public key path",
+				Required:    true,
+				ForceNew:    true,
+			},
+			"network_cidr": {
+				Type:        schema.TypeString,
+				Description: "network cidr block",
 				Required:    true,
 				ForceNew:    true,
 			},
@@ -57,6 +135,7 @@ func resourceKopsCluster() *schema.Resource {
 				ForceNew:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
+
 			"master_zones": {
 				Type:        schema.TypeList,
 				Description: "The list of master zones",
@@ -79,9 +158,21 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("error parsing registry path %q: %v", d.Get("state_store").(string), err)
 	}
 
+	adminAccess := []string{"0.0.0.0/0"}
 	clientset := vfsclientset.NewVFSClientset(registryBase, allowList)
-
-	clusterName := d.Get("name").(string)
+	cloud := fmt.Sprint(d.Get("cloud"))
+	clusterName := fmt.Sprint(d.Get("name"))
+	etcdVersion := fmt.Sprint(d.Get("etcd_version"))
+	image := fmt.Sprint(d.Get("image"))
+	k8sVersion := fmt.Sprint(d.Get("k8s_version"))
+	masterCount := d.Get("master_count").(int)
+	masterSize := fmt.Sprint(d.Get("master_size"))
+	masterVolumeSize := fi.Int32(int32(d.Get("master_volume_size").(int)))
+	networkCidr := fmt.Sprint(d.Get("network_cidr"))
+	nodeMaxSize := fi.Int32(int32(d.Get("node_max_size").(int)))
+	nodeMinSize := fi.Int32(int32(d.Get("node_min_size").(int)))
+	nodeSize := fmt.Sprint(d.Get("node_size"))
+	nodeVolumeSize := fi.Int32(int32(d.Get("node_volume_size").(int)))
 
 	nodeZones := make([]string, len(d.Get("node_zones").([]interface{})))
 
@@ -89,7 +180,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("Must provide node zones")
 	}
 
-	for i, v := range d.Get("master_zones").([]interface{}) {
+	for i, v := range d.Get("node_zones").([]interface{}) {
 		nodeZones[i] = fmt.Sprint(v)
 	}
 
@@ -109,13 +200,13 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	cluster.Spec = api.ClusterSpec{
 		Channel:             "stable",
-		CloudProvider:       "aws",
+		CloudProvider:       cloud,
 		ConfigBase:          registryBase.Join(cluster.ObjectMeta.Name).Path(),
-		KubernetesAPIAccess: []string{"0.0.0.0/0"},
-		KubernetesVersion:   "v1.11.5",
-		SSHAccess:           []string{"0.0.0.0/0"},
+		KubernetesAPIAccess: adminAccess,
+		KubernetesVersion:   k8sVersion,
+		SSHAccess:           adminAccess,
 		Topology:            &api.TopologySpec{},
-		NetworkCIDR:         "10.0.0.0/16",
+		NetworkCIDR:         networkCidr,
 	}
 	cluster.Spec.IAM = &api.IAMSpec{
 		AllowContainerRegistry: true,
@@ -138,24 +229,33 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	cluster.Spec.Topology.Nodes = api.TopologyPublic
 
 	cluster.Spec.Kubelet = &api.KubeletConfigSpec{
-		AnonymousAuth:              fi.Bool(false),
+		AnonymousAuth: fi.Bool(false),
+
+		// Hard Coded for now testing dont forget to add RBAC
 		AuthenticationTokenWebhook: fi.Bool(true),
 		AuthorizationMode:          "Webhook",
 	}
 	//**********************************************************
 
-	for _, nodeZone := range nodeZones {
-		cluster.Spec.Subnets = append(cluster.Spec.Subnets, api.ClusterSubnetSpec{
-			Name: nodeZone,
-			Zone: nodeZone,
-			Type: api.SubnetTypePublic,
-		})
+	keys := make(map[string]bool)
+	subnetZones := append(nodeZones, masterZones...)
+
+	for _, subnetZone := range subnetZones {
+		if _, value := keys[subnetZone]; !value {
+			keys[subnetZone] = true
+			cluster.Spec.Subnets = append(cluster.Spec.Subnets, api.ClusterSubnetSpec{
+				Name: subnetZone,
+				Zone: subnetZone,
+				Type: api.SubnetTypePublic,
+			})
+		}
+
 	}
 
 	for _, etcdClusterName := range cloudup.EtcdClusters {
 		etcdCluster := &api.EtcdClusterSpec{
 			Name:    etcdClusterName,
-			Version: "3.2.24",
+			Version: etcdVersion,
 		}
 		for _, masterZone := range masterZones {
 			etcdMember := &api.EtcdMemberSpec{
@@ -163,6 +263,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 				InstanceGroup: fi.String("master-" + masterZone),
 			}
 			etcdCluster.Members = append(etcdCluster.Members, etcdMember)
+
 		}
 		cluster.Spec.EtcdClusters = append(cluster.Spec.EtcdClusters, etcdCluster)
 	}
@@ -180,18 +281,21 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 	{
 		// Create master ig, Test only
-		masterCount := 1
+
 		masters := []*api.InstanceGroup{}
 
 		for i := 0; i < masterCount; i++ {
 			master := &api.InstanceGroup{}
-			master.ObjectMeta.Name = "master-" + masterZones[i]
+			master.ObjectMeta.Name = "master-" + masterZones[i%len(masterZones)]
+			if int(masterCount) > len(masterZones) {
+				master.ObjectMeta.Name += "-" + strconv.Itoa(1+(i/len(masterZones)))
+			}
 			master.Spec = api.InstanceGroupSpec{
 				Role:           api.InstanceGroupRoleMaster,
 				Subnets:        masterZones,
-				Image:          "ami-03b850a018c8cd25e",
-				MachineType:    "t2.medium",
-				RootVolumeSize: fi.Int32(20),
+				Image:          image,
+				MachineType:    masterSize,
+				RootVolumeSize: masterVolumeSize,
 			}
 
 			_, err := clientset.InstanceGroupsFor(cluster).Create(master)
@@ -209,12 +313,12 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 		nodes.ObjectMeta.Name = "nodes"
 		nodes.Spec = api.InstanceGroupSpec{
-			Image:          "ami-03b850a018c8cd25e",
-			MachineType:    "t2.medium",
-			MaxSize:        fi.Int32(5),
-			MinSize:        fi.Int32(2),
+			Image:          image,
+			MachineType:    nodeSize,
+			MaxSize:        nodeMaxSize,
+			MinSize:        nodeMinSize,
 			Role:           api.InstanceGroupRoleNode,
-			RootVolumeSize: fi.Int32(20),
+			RootVolumeSize: nodeVolumeSize,
 			Subnets:        nodeZones,
 		}
 
@@ -263,11 +367,12 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	conf, err := kubeconfig.BuildKubecfg(cluster, keyStore, secretStore,
-		&commands.CloudDiscoveryStatusStore{})
+	conf, err := kubeconfig.BuildKubecfg(cluster, keyStore, secretStore, &commands.CloudDiscoveryStatusStore{})
+
 	if err != nil {
 		return err
 	}
+
 	conf.WriteKubecfg()
 
 	d.SetId(clusterName)
@@ -311,13 +416,9 @@ func resourceKopsUpdate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceKopsDelete(d *schema.ResourceData, meta interface{}) error {
 
-	name := d.Id()
+	var err error
 
-	var (
-		cloud   fi.Cloud
-		cluster *api.Cluster
-		err     error
-	)
+	name := d.Id()
 
 	registryBase, err := vfs.Context.BuildVfsPath(d.Get("state_store").(string))
 
@@ -330,8 +431,12 @@ func resourceKopsDelete(d *schema.ResourceData, meta interface{}) error {
 
 	log.Printf("[INFO] Reading Kops Cluster %s", name)
 
-	cluster, err = clientset.GetCluster(name)
-	cloud, err = cloudup.BuildCloud(cluster)
+	cluster, err := clientset.GetCluster(name)
+	if err != nil {
+		return err
+	}
+
+	cloud, err := cloudup.BuildCloud(cluster)
 	if err != nil {
 		return err
 	}
@@ -362,12 +467,14 @@ func resourceKopsDelete(d *schema.ResourceData, meta interface{}) error {
 		}
 
 	}
-	b := kubeconfig.NewKubeconfigBuilder()
-	b.Context = name
-	err = b.DeleteKubeConfig()
-	if err != nil {
+
+	conf := kubeconfig.NewKubeconfigBuilder()
+	conf.Context = name
+
+	if err = conf.DeleteKubeConfig(); err != nil {
 		log.Printf("[DEBUG] Received error: %#v", err)
 	}
+
 	d.SetId("")
 
 	return nil
