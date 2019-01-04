@@ -1,10 +1,8 @@
-### Terraform ###
-# Local .terraform directories
-**/.terraform/*
-glide.lock
+### Terraform-Provider-Kops ###
+**/example/.terraform/*
 *.tfstate
 *.tfstate.*
 sample.yaml
 crash.log
+**/vendor/*
 *.tfvars
-terraform-provider-kops
