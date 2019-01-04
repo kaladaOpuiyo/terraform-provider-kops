@@ -12,7 +12,6 @@ import (
 	api "k8s.io/kops/pkg/apis/kops"
 	"k8s.io/kops/pkg/client/simple/vfsclientset"
 	commands "k8s.io/kops/pkg/commands"
-	dnsGossip "k8s.io/kops/pkg/dns"
 	"k8s.io/kops/pkg/kubeconfig"
 	"k8s.io/kops/pkg/resources"
 	resourceops "k8s.io/kops/pkg/resources/ops"
@@ -42,19 +41,19 @@ func resourceKopsCluster() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "Api load balance type, internal or public",
 				Optional:    true,
-				Default:     "public",
-			},
-			"authorization": {
-				Type:        schema.TypeString,
-				Description: "Authorization, RBAC or AlwaysAllow",
-				Optional:    true,
-				Default:     "AlwaysAllow",
 			},
 			"associate_public_ip": {
 				Type:        schema.TypeBool,
 				Description: "associate public ip",
 				Optional:    true,
-				Default:     true,
+				Default:     "",
+			},
+			"authorization": {
+				Type:        schema.TypeString,
+				Description: "Authorization, RBAC or AlwaysAllow",
+				ForceNew:    true,
+				Optional:    true,
+				Default:     "AlwaysAllow",
 			},
 			"bastion": {
 				Type:        schema.TypeBool,
@@ -74,58 +73,16 @@ func resourceKopsCluster() *schema.Resource {
 				Description: "Cloud Labels",
 				Optional:    true,
 			},
-			"image": {
-				Type:        schema.TypeString,
-				Description: "AMI Image",
-				Optional:    true,
-				Default:     "ami-03b850a018c8cd25e",
-			},
-			"master_size": {
-				Type:        schema.TypeString,
-				Description: "Master Nodes Instances Size e.g. t2.medium",
-				Required:    true,
-			},
-			"node_size": {
-				Type:        schema.TypeString,
-				Description: "Worker Nodes Instances Size e.g. t2.medium",
-				Required:    true,
-			},
-			"name": {
-				Type:        schema.TypeString,
-				Description: "Name of Cluster",
-				Required:    true,
-				ForceNew:    true,
-			},
 			"dns": {
 				Type:        schema.TypeString,
 				Description: "dns",
 				Optional:    true,
 			},
-
-			"topology": {
-				Type:        schema.TypeString,
-				Description: "Topology",
-				Optional:    true,
-				Default:     "public",
-			},
-			"non_masquerade_cidr": {
-				Type:        schema.TypeString,
-				Description: "non masquerade cidr",
-				Optional:    true,
-				Default:     "100.64.0.1/10",
-			},
-
-			"state_store": {
-				Type:        schema.TypeString,
-				Description: "State Store",
-				Required:    true,
-				ForceNew:    true,
-			},
 			"dry_run": {
 				Type:        schema.TypeBool,
 				Description: "dry run",
 				Optional:    true,
-				Default:     true,
+				Default:     false,
 			},
 			"encrypt_etcd_storage": {
 				Type:        schema.TypeBool,
@@ -133,10 +90,35 @@ func resourceKopsCluster() *schema.Resource {
 				Optional:    true,
 				Default:     true,
 			},
+			"etcd_version": {
+				Type:        schema.TypeString,
+				Description: "etcd version",
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "3.2.24",
+			},
+			"image": {
+				Type:        schema.TypeString,
+				Description: "AMI Image",
+				Optional:    true,
+				Default:     "ami-03b850a018c8cd25e",
+			},
+			"k8s_version": {
+				Type:        schema.TypeString,
+				Description: "k8s version",
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "v1.11.5",
+			},
 			"master_count": {
 				Type:        schema.TypeInt,
 				Description: "Master Count",
 				ForceNew:    true,
+				Required:    true,
+			},
+			"master_size": {
+				Type:        schema.TypeString,
+				Description: "Master Nodes Instances Size e.g. t2.medium",
 				Required:    true,
 			},
 			"master_volume_size": {
@@ -145,11 +127,33 @@ func resourceKopsCluster() *schema.Resource {
 				ForceNew:    true,
 				Required:    true,
 			},
-			"node_volume_size": {
-				Type:        schema.TypeInt,
-				Description: "Node Volume Size",
-				ForceNew:    true,
+			"master_zones": {
+				Type:        schema.TypeList,
+				Description: "The list of master zones",
 				Required:    true,
+				ForceNew:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"name": {
+				Type:        schema.TypeString,
+				Description: "Name of Cluster",
+				Required:    true,
+				ForceNew:    true,
+			},
+			"network_cidr": {
+				Type:        schema.TypeString,
+				Description: "network cidr block",
+				Required:    true,
+				ForceNew:    true,
+			},
+			"networking": {
+				Type:        schema.TypeString,
+				Description: "CNI choice",
+				Optional:    true,
+				ForceNew:    true,
+				Default:     "kubenet",
 			},
 			"node_max_size": {
 				Type:        schema.TypeInt,
@@ -163,31 +167,16 @@ func resourceKopsCluster() *schema.Resource {
 				ForceNew:    true,
 				Required:    true,
 			},
-			"etcd_version": {
+			"node_size": {
 				Type:        schema.TypeString,
-				Description: "etcd version",
-				Optional:    true,
-				ForceNew:    true,
-				Default:     "3.2.24",
-			},
-			"k8s_version": {
-				Type:        schema.TypeString,
-				Description: "k8s version",
-				Optional:    true,
-				ForceNew:    true,
-				Default:     "v1.11.5",
-			},
-			"ssh_public_key": {
-				Type:        schema.TypeString,
-				Description: "ssh public key path",
+				Description: "Worker Nodes Instances Size e.g. t2.medium",
 				Required:    true,
-				ForceNew:    true,
 			},
-			"network_cidr": {
-				Type:        schema.TypeString,
-				Description: "network cidr block",
-				Required:    true,
+			"node_volume_size": {
+				Type:        schema.TypeInt,
+				Description: "Node Volume Size",
 				ForceNew:    true,
+				Required:    true,
 			},
 			"node_zones": {
 				Type:        schema.TypeList,
@@ -198,15 +187,29 @@ func resourceKopsCluster() *schema.Resource {
 					Type:     schema.TypeString,
 					MinItems: 1},
 			},
-
-			"master_zones": {
-				Type:        schema.TypeList,
-				Description: "The list of master zones",
+			"non_masquerade_cidr": {
+				Type:        schema.TypeString,
+				Description: "non masquerade cidr",
+				Optional:    true,
+				Default:     "100.64.0.1/10",
+			},
+			"ssh_public_key": {
+				Type:        schema.TypeString,
+				Description: "ssh public key path",
 				Required:    true,
 				ForceNew:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+			},
+			"state_store": {
+				Type:        schema.TypeString,
+				Description: "State Store",
+				Required:    true,
+				ForceNew:    true,
+			},
+			"topology": {
+				Type:        schema.TypeString,
+				Description: "Topology",
+				Optional:    true,
+				Default:     "public",
 			},
 			"vpc_id": {
 				Type:        schema.TypeString,
@@ -244,6 +247,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error parsing registry path %q: %v", d.Get("state_store").(string), err)
 	}
+	// clientset := meta.(*simple.Clientset)
 	clientset := vfsclientset.NewVFSClientset(registryBase, allowList)
 	cloud := fmt.Sprint(d.Get("cloud"))
 	cluster := &api.Cluster{}
@@ -331,7 +335,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	} else {
 		return fmt.Errorf("unknown authorization mode %q", authorization)
 	}
-	// Will make networking selectable... eventually :)
+	// Will make networking selectable... eventually ¯\_(ツ)_/¯
 	cluster.Spec.Networking = &api.NetworkingSpec{}
 	cluster.Spec.Networking.Calico = &api.CalicoNetworkingSpec{}
 	cluster.Spec.Networking.Calico.MajorVersion = "v3"
@@ -342,6 +346,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		cluster.Spec.Topology.DNS.Type = api.DNSTypePublic
 	}
 
+	//Should be able to selete private network topology for either master or nodes
 	cluster.Spec.Topology.Masters = api.TopologyPublic
 	cluster.Spec.Topology.Nodes = api.TopologyPublic
 	cluster.Spec.NonMasqueradeCIDR = nonMasqueradeCIDR
@@ -349,35 +354,45 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	cluster.Spec.Kubelet = &api.KubeletConfigSpec{
 		AnonymousAuth: fi.Bool(false),
 
-		// Hard Coded for now testing dont forget to add RBAC when createing these rules
+		// Hard Coded for now testing dont forget to add RBAC when creating these rules
 		AuthenticationTokenWebhook: fi.Bool(true),
 		AuthorizationMode:          "Webhook",
+
+		// Optional Parameters to be implemented
+		// ClientCAFile:               "",
+		// TLSCertFile:                "",
+		// TLSPrivateKeyFile:          "",
+		// LoadBalancerType:           "",
+		// IdleTimeoutSeconds:         "",
+		// SecurityGroupOverride:      "",
+		// AdditionalSecurityGroups:   " ",
+		// UseForInternalApi:          "",
+		// SSLCertificate:             "",
 	}
 
-	if cluster.Spec.API == nil {
-		cluster.Spec.API = &api.AccessSpec{}
+	// Super scaled down from the cmd implementation mainly here for testing
+	// if cluster.Spec.API.IsEmpty() {
+	if apiLoadBalancerType != "" {
+		cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
 	}
-	if cluster.Spec.API.IsEmpty() {
-		if apiLoadBalancerType != "" {
-			cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
-		} else {
-			switch cluster.Spec.Topology.Masters {
-			case api.TopologyPublic:
-				if dnsGossip.IsGossipHostname(cluster.Name) {
-					// gossip DNS names don't work outside the cluster, so we use a LoadBalancer instead
-					cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
-				} else {
-					cluster.Spec.API.DNS = &api.DNSAccessSpec{}
-				}
+	// else {
+	// 	switch cluster.Spec.Topology.Masters {
+	// 	case api.TopologyPublic:
+	// 		if dnsGossip.IsGossipHostname(cluster.Name) {
+	// 			// gossip DNS names don't work outside the cluster, so we use a LoadBalancer instead
+	// 			cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
+	// 		} else {
+	// 			cluster.Spec.API.DNS = &api.DNSAccessSpec{}
+	// 		}
 
-			case api.TopologyPrivate:
-				cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
+	// 	case api.TopologyPrivate:
+	// 		cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
 
-			default:
-				return fmt.Errorf("unknown master topology type: %q", cluster.Spec.Topology.Masters)
-			}
-		}
-	}
+	// 	default:
+	// 		return fmt.Errorf("unknown master topology type: %q", cluster.Spec.Topology.Masters)
+	// 	}
+	// }
+	// }
 	if cluster.Spec.API.LoadBalancer != nil && cluster.Spec.API.LoadBalancer.Type == "" {
 		switch apiLoadBalancerType {
 		case "", "public":
@@ -408,7 +423,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	}
 
-	// Create master ig,Testing only
+	// Create master ig(s)
 	for i := 0; i < masterCount; i++ {
 
 		zone := masterZones[i%len(masterZones)]
@@ -456,6 +471,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		cluster.Spec.EtcdClusters = append(cluster.Spec.EtcdClusters, etcdCluster)
 	}
 
+	// Create nodes ig
 	nodes.ObjectMeta.Name = "nodes"
 	nodes.Spec = api.InstanceGroupSpec{
 		AssociatePublicIP: fi.Bool(associatePublicIP),
@@ -487,7 +503,6 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error adding SSH public key: %v", err)
 	}
-
 	if err := cloudup.PerformAssignments(cluster); err != nil {
 		return err
 	}
@@ -497,6 +512,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	// Probably need to look into doing this another way ¯\_(ツ)_/¯
 	apply := &cloudup.ApplyClusterCmd{
 		Cluster:    cluster,
 		Clientset:  clientset,
@@ -656,27 +672,4 @@ func parseCloudLabels(s string) (map[string]string, error) {
 		m[pair[0]] = pair[1]
 	}
 	return m, nil
-}
-func trimCommonPrefix(names []string) []string {
-	// Trim shared prefix to keep the lengths sane
-	// (this only applies to new clusters...)
-	for len(names) != 0 && len(names[0]) > 1 {
-		prefix := names[0][:1]
-		allMatch := true
-		for _, name := range names {
-			if !strings.HasPrefix(name, prefix) {
-				allMatch = false
-			}
-		}
-
-		if !allMatch {
-			break
-		}
-
-		for i := range names {
-			names[i] = strings.TrimPrefix(names[i], prefix)
-		}
-	}
-
-	return names
 }
