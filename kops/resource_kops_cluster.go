@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -39,11 +38,13 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	adminAccess := make([]string, len(d.Get("admin_access").([]interface{})))
 	if len(adminAccess) == 0 {
-		return fmt.Errorf("Must provide node zones")
+		adminAccess = []string{"0.0.0.0/0"}
+	} else {
+		for i, v := range d.Get("admin_access").([]interface{}) {
+			adminAccess[i] = fmt.Sprint(v)
+		}
 	}
-	for i, v := range d.Get("admin_access").([]interface{}) {
-		adminAccess[i] = fmt.Sprint(v)
-	}
+
 	allowList := true
 	apiLoadBalancerType := fmt.Sprint(d.Get("api_load_balancer_type"))
 	authorization := fmt.Sprint(d.Get("authorization"))
@@ -71,7 +72,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	image := fmt.Sprint(d.Get("image"))
 	instanceGroups := []*api.InstanceGroup{}
 	k8sVersion := fmt.Sprint(d.Get("k8s_version"))
-	masterCount := d.Get("master_count").(int)
+	masterPerZone := fi.Int32(int32(d.Get("master_per_zone").(int)))
 	masters := []*api.InstanceGroup{}
 	masterSize := fmt.Sprint(d.Get("master_size"))
 	masterVolumeSize := fi.Int32(int32(d.Get("master_volume_size").(int)))
@@ -96,6 +97,14 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		nodeZones[i] = fmt.Sprint(v)
 	}
 	nonMasqueradeCIDR := fmt.Sprint(d.Get("non_masquerade_cidr"))
+	sshAccess := make([]string, len(d.Get("ssh_access").([]interface{})))
+	if len(sshAccess) == 0 {
+		sshAccess = []string{"0.0.0.0/0"}
+	} else {
+		for i, v := range d.Get("ssh_access").([]interface{}) {
+			sshAccess[i] = fmt.Sprint(v)
+		}
+	}
 	topology := fmt.Sprint(d.Get("topology"))
 	vpcID := fmt.Sprint(d.Get("vpc_id"))
 
@@ -106,7 +115,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		ConfigBase:          registryBase.Join(cluster.ObjectMeta.Name).Path(),
 		KubernetesAPIAccess: adminAccess,
 		KubernetesVersion:   k8sVersion,
-		SSHAccess:           adminAccess,
+		SSHAccess:           sshAccess,
 		Topology:            &api.TopologySpec{},
 		NetworkCIDR:         networkCidr,
 	}
@@ -295,13 +304,10 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	// }
 
 	// Create master ig(s)
-	for i := 0; i < masterCount; i++ {
+	for i := 0; i < len(masterZones); i++ {
 
 		zone := masterZones[i%len(masterZones)]
 		name := zone
-		if int(masterCount) > len(masterZones) {
-			name += "-" + strconv.Itoa(1+(i/len(masterZones)))
-		}
 
 		master := &api.InstanceGroup{}
 		master.ObjectMeta.Name = "master-" + name
@@ -311,6 +317,8 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 			MachineType:       masterSize,
 			Role:              api.InstanceGroupRoleMaster,
 			RootVolumeSize:    masterVolumeSize,
+			MaxSize:           masterPerZone,
+			MinSize:           masterPerZone,
 			Subnets:           []string{masterZones[i%len(masterZones)]},
 		}
 

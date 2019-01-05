@@ -7,7 +7,7 @@ func kopsSchema() map[string]*schema.Schema {
 		"admin_access": {
 			Type:        schema.TypeList,
 			Description: "Admin Access",
-			Required:    true,
+			Optional:    true,
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
@@ -32,7 +32,7 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"bastion": {
 			Type:        schema.TypeBool,
-			Description: "Pass the bastion flag to enable a bastion instance group. Only applies to private topology",
+			Description: "Set to enable a bastion instance group. Only applies to private topology",
 			Optional:    true,
 			Default:     false,
 		},
@@ -45,7 +45,7 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"cloud_labels": {
 			Type:        schema.TypeString,
-			Description: "Cloud Labels",
+			Description: "A list of KV pairs used to tag all instance groups in AWS (eg Owner=John Doe,Team=Some Team)",
 			Optional:    true,
 		},
 		"config": {
@@ -55,18 +55,18 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"dns": {
 			Type:        schema.TypeString,
-			Description: "dns",
+			Description: "DNS hosted zone to use: public|private. (default Public)",
 			Optional:    true,
 		},
 		"dry_run": {
 			Type:        schema.TypeBool,
-			Description: "dry run",
+			Description: "If true, only print the object that would be sent, without sending it. This can be used to create a cluster YAML or JSON manifest",
 			Optional:    true,
 			Default:     false,
 		},
 		"encrypt_etcd_storage": {
 			Type:        schema.TypeBool,
-			Description: "encrypt etcd storage",
+			Description: "Generate key in aws kms and use it for encrypt etcd volumee",
 			Optional:    true,
 			Default:     true,
 		},
@@ -79,7 +79,7 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"image": {
 			Type:        schema.TypeString,
-			Description: "AMI Image",
+			Description: "AMI Image for all volumes",
 			Optional:    true,
 			Default:     "ami-03b850a018c8cd25e",
 		},
@@ -90,11 +90,12 @@ func kopsSchema() map[string]*schema.Schema {
 			ForceNew:    true,
 			Default:     "v1.11.5",
 		},
-		"master_count": {
+		"master_per_zone": {
 			Type:        schema.TypeInt,
-			Description: "Master Count",
+			Description: "Masters Per Zone",
 			ForceNew:    true,
-			Required:    true,
+			Optional:    true,
+			Default:     1,
 		},
 		"master_security_groups": {
 			Type:        schema.TypeList,
@@ -111,13 +112,13 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"master_volume_size": {
 			Type:        schema.TypeInt,
-			Description: "Master Volume Size",
+			Description: "Master Root Volume Size",
 			ForceNew:    true,
 			Required:    true,
 		},
 		"master_zones": {
 			Type:        schema.TypeList,
-			Description: "The list of master zones",
+			Description: "Zones in which to run masters (must be an odd number)",
 			Required:    true,
 			ForceNew:    true,
 			Elem: &schema.Schema{
@@ -132,19 +133,19 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"name": {
 			Type:        schema.TypeString,
-			Description: "Name of Cluster",
+			Description: "Name of cluster",
 			Required:    true,
 			ForceNew:    true,
 		},
 		"network_cidr": {
 			Type:        schema.TypeString,
-			Description: "network cidr block",
+			Description: "Set to override the default network CIDR",
 			Required:    true,
 			ForceNew:    true,
 		},
 		"networking": {
 			Type:        schema.TypeString,
-			Description: "CNI choice",
+			Description: "Networking mode to use.  kubenet (default), classic, external, kopeio-vxlan (or kopeio), weave, flannel-vxlan (or flannel), flannel-udp, calico, canal, kube-router, romana, amazon-vpc-routed-eni, cilium, cni. (default kubenet)",
 			Optional:    true,
 			ForceNew:    true,
 			Default:     "kubenet",
@@ -168,7 +169,7 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"node_volume_size": {
 			Type:        schema.TypeInt,
-			Description: "Node Volume Size",
+			Description: "Node Root Volume Size",
 			ForceNew:    true,
 			Required:    true,
 		},
@@ -203,8 +204,16 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"output": {
 			Type:        schema.TypeString,
-			Description: "Output format.One of json | yaml.Used with the dry-run flag",
+			Description: "Output format.One of json | yaml.Used with the dry-run",
 			Optional:    true,
+		},
+		"ssh_access": {
+			Type:        schema.TypeList,
+			Description: "Restrict SSH access to this CIDR.  If not set, access will not be restricted by IP. (default [0.0.0.0/0])",
+			Optional:    true,
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
 		},
 		"ssh_public_key": {
 			Type:        schema.TypeString,
@@ -248,7 +257,7 @@ func kopsSchema() map[string]*schema.Schema {
 		},
 		"vpc_id": {
 			Type:        schema.TypeString,
-			Description: "vpc id",
+			Description: "VPC ID, Set to use a shared VPC",
 			Optional:    true,
 		},
 

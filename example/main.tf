@@ -19,8 +19,8 @@ provider "helm" {
 
 resource "kops_cluster" "aux_cluster" {
 
-  admin_access           = ["0.0.0.0/0"]
-  api_load_balancer_type = "" // optional, not implemented, Testing
+  admin_access           = ["0.0.0.0/0"] // optional,
+  api_load_balancer_type = ""            // optional, not implemented, Testing
   associate_public_ip    = true
   authorization          = "AlwaysAllow"
   bastion                = false // working out the bugs leave as for testing
@@ -34,7 +34,7 @@ resource "kops_cluster" "aux_cluster" {
   etcd_version           = "3.2.24"
   image                  = "ami-03b850a018c8cd25e"
   k8s_version            = "v1.11.5"
-  master_count           = 1
+  master_per_zone        = 1  // optional, default is 1 per zone
   master_security_groups = [] // optional, not implemented
   master_size            = "t2.medium"
   master_volume_size     = 20
@@ -49,8 +49,9 @@ resource "kops_cluster" "aux_cluster" {
   node_size              = "t2.medium"
   node_volume_size       = 20
   node_zones             = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  out                    = "" // optional, not implemented
-  output                 = "" // optional, not implemented
+  out                    = ""            // optional, not implemented
+  output                 = ""            // optional, not implemented
+  ssh_access             = ["0.0.0.0/0"] // optional
   ssh_public_key         = "~/.ssh/kalada-admin.pub"
   state_store            = "s3://${aws_s3_bucket.kops_state.id}"
   subnets                = []       // optional, not implemented
