@@ -15,7 +15,7 @@ import (
 	commands "k8s.io/kops/pkg/commands"
 	"k8s.io/kops/pkg/kubeconfig"
 	"k8s.io/kops/pkg/resources"
-	resourceops "k8s.io/kops/pkg/resources/ops"
+	ops "k8s.io/kops/pkg/resources/ops"
 	"k8s.io/kops/upup/pkg/fi"
 	"k8s.io/kops/upup/pkg/fi/cloudup"
 	"k8s.io/kops/upup/pkg/fi/utils"
@@ -28,196 +28,7 @@ func resourceKopsCluster() *schema.Resource {
 		Read:   resourceKopsRead,
 		Update: resourceKopsUpdate,
 		Delete: resourceKopsDelete,
-
-		Schema: map[string]*schema.Schema{
-			"admin_access": {
-				Type:        schema.TypeList,
-				Description: "Admin Access",
-				Required:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"api_load_balancer_type": {
-				Type:        schema.TypeString,
-				Description: "Api load balance type, internal or public",
-				Optional:    true,
-			},
-			"associate_public_ip": {
-				Type:        schema.TypeBool,
-				Description: "associate public ip",
-				Optional:    true,
-				Default:     "",
-			},
-			"authorization": {
-				Type:        schema.TypeString,
-				Description: "Authorization, RBAC or AlwaysAllow",
-				ForceNew:    true,
-				Optional:    true,
-				Default:     "AlwaysAllow",
-			},
-			"bastion": {
-				Type:        schema.TypeBool,
-				Description: "create a bastion host",
-				Optional:    true,
-				Default:     false,
-			},
-			"cloud": {
-				Type:        schema.TypeString,
-				Description: "Name of Cloud Provider",
-				Optional:    true,
-				ForceNew:    true,
-				Default:     "aws",
-			},
-			"cloud_labels": {
-				Type:        schema.TypeString,
-				Description: "Cloud Labels",
-				Optional:    true,
-			},
-			"dns": {
-				Type:        schema.TypeString,
-				Description: "dns",
-				Optional:    true,
-			},
-			"dry_run": {
-				Type:        schema.TypeBool,
-				Description: "dry run",
-				Optional:    true,
-				Default:     false,
-			},
-			"encrypt_etcd_storage": {
-				Type:        schema.TypeBool,
-				Description: "encrypt etcd storage",
-				Optional:    true,
-				Default:     true,
-			},
-			"etcd_version": {
-				Type:        schema.TypeString,
-				Description: "etcd version",
-				Optional:    true,
-				ForceNew:    true,
-				Default:     "3.2.24",
-			},
-			"image": {
-				Type:        schema.TypeString,
-				Description: "AMI Image",
-				Optional:    true,
-				Default:     "ami-03b850a018c8cd25e",
-			},
-			"k8s_version": {
-				Type:        schema.TypeString,
-				Description: "k8s version",
-				Optional:    true,
-				ForceNew:    true,
-				Default:     "v1.11.5",
-			},
-			"master_count": {
-				Type:        schema.TypeInt,
-				Description: "Master Count",
-				ForceNew:    true,
-				Required:    true,
-			},
-			"master_size": {
-				Type:        schema.TypeString,
-				Description: "Master Nodes Instances Size e.g. t2.medium",
-				Required:    true,
-			},
-			"master_volume_size": {
-				Type:        schema.TypeInt,
-				Description: "Master Volume Size",
-				ForceNew:    true,
-				Required:    true,
-			},
-			"master_zones": {
-				Type:        schema.TypeList,
-				Description: "The list of master zones",
-				Required:    true,
-				ForceNew:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
-			"name": {
-				Type:        schema.TypeString,
-				Description: "Name of Cluster",
-				Required:    true,
-				ForceNew:    true,
-			},
-			"network_cidr": {
-				Type:        schema.TypeString,
-				Description: "network cidr block",
-				Required:    true,
-				ForceNew:    true,
-			},
-			"networking": {
-				Type:        schema.TypeString,
-				Description: "CNI choice",
-				Optional:    true,
-				ForceNew:    true,
-				Default:     "kubenet",
-			},
-			"node_max_size": {
-				Type:        schema.TypeInt,
-				Description: "Node Max Size",
-				ForceNew:    true,
-				Required:    true,
-			},
-			"node_min_size": {
-				Type:        schema.TypeInt,
-				Description: "Node Min Size",
-				ForceNew:    true,
-				Required:    true,
-			},
-			"node_size": {
-				Type:        schema.TypeString,
-				Description: "Worker Nodes Instances Size e.g. t2.medium",
-				Required:    true,
-			},
-			"node_volume_size": {
-				Type:        schema.TypeInt,
-				Description: "Node Volume Size",
-				ForceNew:    true,
-				Required:    true,
-			},
-			"node_zones": {
-				Type:        schema.TypeList,
-				Description: "The list of node zones",
-				Required:    true,
-				ForceNew:    true,
-				Elem: &schema.Schema{
-					Type:     schema.TypeString,
-					MinItems: 1},
-			},
-			"non_masquerade_cidr": {
-				Type:        schema.TypeString,
-				Description: "non masquerade cidr",
-				Optional:    true,
-				Default:     "100.64.0.1/10",
-			},
-			"ssh_public_key": {
-				Type:        schema.TypeString,
-				Description: "ssh public key path",
-				Required:    true,
-				ForceNew:    true,
-			},
-			"state_store": {
-				Type:        schema.TypeString,
-				Description: "State Store",
-				Required:    true,
-				ForceNew:    true,
-			},
-			"topology": {
-				Type:        schema.TypeString,
-				Description: "Topology",
-				Optional:    true,
-				Default:     "public",
-			},
-			"vpc_id": {
-				Type:        schema.TypeString,
-				Description: "vpc id",
-				Optional:    true,
-			},
-		},
+		Schema: kopsSchema(),
 	}
 }
 
@@ -418,6 +229,9 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 			}
 
 		}
+	case api.TopologyPrivate:
+		return fmt.Errorf("Need to handle Private networks as well for now just public")
+
 	default:
 		return fmt.Errorf("invalid topology %s", topology)
 	}
@@ -665,7 +479,7 @@ func resourceKopsDelete(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	allResources, err := resourceops.ListResources(cloud, name, "")
+	allResources, err := ops.ListResources(cloud, name, "")
 	if err != nil {
 		return err
 	}
@@ -678,7 +492,7 @@ func resourceKopsDelete(d *schema.ResourceData, meta interface{}) error {
 		clusterResources[k] = resource
 	}
 
-	err = resourceops.DeleteResources(cloud, clusterResources)
+	err = ops.DeleteResources(cloud, clusterResources)
 	if err != nil {
 		return err
 	}

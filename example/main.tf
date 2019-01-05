@@ -18,13 +18,16 @@ provider "helm" {
 ##################################################################################################
 
 resource "kops_cluster" "aux_cluster" {
+
   admin_access           = ["0.0.0.0/0"]
-  api_load_balancer_type = "" //Testing
+  api_load_balancer_type = "" // optional, not implemented, Testing
   associate_public_ip    = true
   authorization          = "AlwaysAllow"
   bastion                = false // working out the bugs leave as for testing
-  cloud                  = "aws"
+  cloud                  = "aws" // Only AWS for now
   cloud_labels           = "Owner=Kalada Opuiyo,env=test"
+  config                 = "" // optional, not implemented
+  depends_on             = ["aws_iam_user.kops"]
   dns                    = "public" // working out bugs leave as for testing
   dry_run                = false
   encrypt_etcd_storage   = true
@@ -32,23 +35,30 @@ resource "kops_cluster" "aux_cluster" {
   image                  = "ami-03b850a018c8cd25e"
   k8s_version            = "v1.11.5"
   master_count           = 1
+  master_security_groups = [] // optional, not implemented
   master_size            = "t2.medium"
   master_volume_size     = 20
   master_zones           = ["us-east-1a", "us-east-1b", "us-east-1d"]
+  model                  = "" // optional, not implemented
   name                   = "k8s.urbanradikal.com"
   network_cidr           = "10.0.0.0/16"
   networking             = "calico"
   node_max_size          = 5
   node_min_size          = 2
+  node_security_groups   = [] // optional, not implemented
   node_size              = "t2.medium"
   node_volume_size       = 20
   node_zones             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  out                    = "" // optional, not implemented
+  output                 = "" // optional, not implemented
   ssh_public_key         = "~/.ssh/kalada-admin.pub"
   state_store            = "s3://${aws_s3_bucket.kops_state.id}"
+  subnets                = []       // optional, not implemented
+  target                 = ""       // optional, not implemented
   topology               = "public" // working out bugs leave as for testing
-  vpc_id                 = ""
-
-  depends_on = ["aws_iam_user.kops"]
+  utility_subnets        = []       // optional, not implemented
+  vpc_id                 = ""       // optional
+  zones                  = []       // optional, not implemented
 }
 
 ##################################################################################################
