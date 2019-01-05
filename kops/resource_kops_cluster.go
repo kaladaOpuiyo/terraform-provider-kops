@@ -395,10 +395,32 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	} else {
 		cluster.Spec.Topology.DNS.Type = api.DNSTypePublic
 	}
+	// Need to handle Private networks as well for now just public ¯\_(ツ)_/¯
+	switch topology {
+	case api.TopologyPublic:
+		cluster.Spec.Topology.Masters = api.TopologyPublic
+		cluster.Spec.Topology.Nodes = api.TopologyPublic
+		if bastion {
+			return fmt.Errorf("bastion supports topology='private' only")
+		}
 
-	//Should be able to selete private network topology for either master or nodes
-	cluster.Spec.Topology.Masters = api.TopologyPublic
-	cluster.Spec.Topology.Nodes = api.TopologyPublic
+		keys := make(map[string]bool)
+		subnetZones := append(nodeZones, masterZones...)
+
+		for _, subnetZone := range subnetZones {
+			if _, value := keys[subnetZone]; !value {
+				keys[subnetZone] = true
+				cluster.Spec.Subnets = append(cluster.Spec.Subnets, api.ClusterSubnetSpec{
+					Name: subnetZone,
+					Zone: subnetZone,
+					Type: api.SubnetTypePublic,
+				})
+			}
+
+		}
+	default:
+		return fmt.Errorf("invalid topology %s", topology)
+	}
 	cluster.Spec.NonMasqueradeCIDR = nonMasqueradeCIDR
 
 	cluster.Spec.Kubelet = &api.KubeletConfigSpec{
@@ -457,21 +479,6 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	// if cluster.Spec.API.LoadBalancer != nil && apiSSLCertificate != "" {
 	// 	cluster.Spec.API.LoadBalancer.SSLCertificate = apiSSLCertificate
 	// }
-
-	keys := make(map[string]bool)
-	subnetZones := append(nodeZones, masterZones...)
-
-	for _, subnetZone := range subnetZones {
-		if _, value := keys[subnetZone]; !value {
-			keys[subnetZone] = true
-			cluster.Spec.Subnets = append(cluster.Spec.Subnets, api.ClusterSubnetSpec{
-				Name: subnetZone,
-				Zone: subnetZone,
-				Type: api.SubnetTypePublic,
-			})
-		}
-
-	}
 
 	// Create master ig(s)
 	for i := 0; i < masterCount; i++ {
@@ -561,7 +568,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-
+	// privateDNS := cluster.Spec.Topology != nil && cluster.Spec.Topology.DNS.Type == kops.DNSTypePrivate
 	// Probably need to look into doing this another way ¯\_(ツ)_/¯
 	apply := &cloudup.ApplyClusterCmd{
 		Cluster:    cluster,

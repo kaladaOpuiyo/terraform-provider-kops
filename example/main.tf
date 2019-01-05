@@ -22,10 +22,10 @@ resource "kops_cluster" "aux_cluster" {
   api_load_balancer_type = "" //Testing
   associate_public_ip    = true
   authorization          = "AlwaysAllow"
-  bastion                = "false" //Testing
+  bastion                = false // working out the bugs leave as for testing
   cloud                  = "aws"
   cloud_labels           = "Owner=Kalada Opuiyo,env=test"
-  dns                    = "public"
+  dns                    = "public" // working out bugs leave as for testing
   dry_run                = false
   encrypt_etcd_storage   = true
   etcd_version           = "3.2.24"
@@ -37,7 +37,7 @@ resource "kops_cluster" "aux_cluster" {
   master_zones           = ["us-east-1a", "us-east-1b", "us-east-1d"]
   name                   = "k8s.urbanradikal.com"
   network_cidr           = "10.0.0.0/16"
-  networking             = "canal"
+  networking             = "calico"
   node_max_size          = 5
   node_min_size          = 2
   node_size              = "t2.medium"
@@ -45,7 +45,7 @@ resource "kops_cluster" "aux_cluster" {
   node_zones             = ["us-east-1a", "us-east-1b", "us-east-1c"]
   ssh_public_key         = "~/.ssh/kalada-admin.pub"
   state_store            = "s3://${aws_s3_bucket.kops_state.id}"
-  topology               = "public"
+  topology               = "public" // working out bugs leave as for testing
   vpc_id                 = ""
 
   depends_on = ["aws_iam_user.kops"]
