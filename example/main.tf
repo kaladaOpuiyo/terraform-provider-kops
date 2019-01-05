@@ -37,7 +37,7 @@ resource "kops_cluster" "aux_cluster" {
   master_zones           = ["us-east-1a", "us-east-1b", "us-east-1d"]
   name                   = "k8s.urbanradikal.com"
   network_cidr           = "10.0.0.0/16"
-  networking             = "calico" // This one I consider fun so saving for marriage, does nothing hardcoded calico
+  networking             = "canal"
   node_max_size          = 5
   node_min_size          = 2
   node_size              = "t2.medium"

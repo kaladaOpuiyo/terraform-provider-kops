@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"k8s.io/klog/glog"
 	api "k8s.io/kops/pkg/apis/kops"
 	"k8s.io/kops/pkg/client/simple/vfsclientset"
 	commands "k8s.io/kops/pkg/commands"
@@ -250,6 +251,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	// clientset := meta.(*simple.Clientset)
 	clientset := vfsclientset.NewVFSClientset(registryBase, allowList)
 	cloud := fmt.Sprint(d.Get("cloud"))
+	networking := fmt.Sprint(d.Get("networking"))
 	cluster := &api.Cluster{}
 	clusterName := fmt.Sprint(d.Get("name"))
 	dns := fmt.Sprint(d.Get("dns"))
@@ -335,10 +337,58 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	} else {
 		return fmt.Errorf("unknown authorization mode %q", authorization)
 	}
-	// Will make networking selectable... eventually ¯\_(ツ)_/¯
+
 	cluster.Spec.Networking = &api.NetworkingSpec{}
-	cluster.Spec.Networking.Calico = &api.CalicoNetworkingSpec{}
-	cluster.Spec.Networking.Calico.MajorVersion = "v3"
+	switch networking {
+	case "classic":
+		cluster.Spec.Networking.Classic = &api.ClassicNetworkingSpec{}
+	case "kubenet":
+		cluster.Spec.Networking.Kubenet = &api.KubenetNetworkingSpec{}
+	case "external":
+		cluster.Spec.Networking.External = &api.ExternalNetworkingSpec{}
+	case "cni":
+		cluster.Spec.Networking.CNI = &api.CNINetworkingSpec{}
+	case "kopeio-vxlan", "kopeio":
+		cluster.Spec.Networking.Kopeio = &api.KopeioNetworkingSpec{}
+	case "weave":
+		cluster.Spec.Networking.Weave = &api.WeaveNetworkingSpec{}
+
+		if cluster.Spec.CloudProvider == "aws" {
+			// AWS supports "jumbo frames" of 9001 bytes and weave adds up to 87 bytes overhead
+			// sets the default to the largest number that leaves enough overhead and is divisible by 4
+			jumboFrameMTUSize := int32(8912)
+			cluster.Spec.Networking.Weave.MTU = &jumboFrameMTUSize
+		}
+	case "flannel", "flannel-vxlan":
+		cluster.Spec.Networking.Flannel = &api.FlannelNetworkingSpec{
+			Backend: "vxlan",
+		}
+	case "flannel-udp":
+		glog.Warningf("flannel UDP mode is not recommended; consider flannel-vxlan instead")
+		cluster.Spec.Networking.Flannel = &api.FlannelNetworkingSpec{
+			Backend: "udp",
+		}
+	case "calico":
+		cluster.Spec.Networking.Calico = &api.CalicoNetworkingSpec{
+			MajorVersion: "v3",
+		}
+
+	case "canal":
+		cluster.Spec.Networking.Canal = &api.CanalNetworkingSpec{}
+	case "kube-router":
+		cluster.Spec.Networking.Kuberouter = &api.KuberouterNetworkingSpec{}
+	case "romana":
+		cluster.Spec.Networking.Romana = &api.RomanaNetworkingSpec{}
+	case "amazonvpc", "amazon-vpc-routed-eni":
+		cluster.Spec.Networking.AmazonVPC = &api.AmazonVPCNetworkingSpec{}
+	case "cilium":
+		cluster.Spec.Networking.Cilium = &api.CiliumNetworkingSpec{}
+	case "lyftvpc":
+		cluster.Spec.Networking.LyftVPC = &api.LyftVPCNetworkingSpec{}
+	default:
+		return fmt.Errorf("unknown networking mode %q", networking)
+	}
+
 	cluster.Spec.Topology.DNS = &api.DNSSpec{}
 	if dns == "private" {
 		cluster.Spec.Topology.DNS.Type = api.DNSTypePrivate
