@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"k8s.io/klog/glog"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	api "k8s.io/kops/pkg/apis/kops"
 	"k8s.io/kops/pkg/client/simple/vfsclientset"
 	commands "k8s.io/kops/pkg/commands"
@@ -47,8 +47,8 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	allowList := true
 	apiLoadBalancerType := fmt.Sprint(d.Get("api_load_balancer_type"))
-	authorization := fmt.Sprint(d.Get("authorization"))
 	associatePublicIP := d.Get("associate_public_ip").(bool)
+	authorization := fmt.Sprint(d.Get("authorization"))
 	bastion := d.Get("bastion").(bool)
 	cloudLabels, err := parseCloudLabels(d.Get("cloud_labels").(string))
 	if err != nil {
@@ -184,7 +184,6 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 			Backend: "vxlan",
 		}
 	case "flannel-udp":
-		glog.Warningf("flannel UDP mode is not recommended; consider flannel-vxlan instead")
 		cluster.Spec.Networking.Flannel = &api.FlannelNetworkingSpec{
 			Backend: "udp",
 		}
@@ -273,7 +272,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	// else {
 	// 	switch cluster.Spec.Topology.Masters {
 	// 	case api.TopologyPublic:
-	// 		if dnsGossip.IsGossipHostname(cluster.Name) {
+	// 		if dnsGossip.IsGossipHostname(cluster.Spec) {
 	// 			// gossip DNS names don't work outside the cluster, so we use a LoadBalancer instead
 	// 			cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
 	// 		} else {
@@ -430,8 +429,8 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 
 	name := d.Id()
 
+	//check if diff in state_store
 	registryBase, err := vfs.Context.BuildVfsPath(d.Get("state_store").(string))
-
 	if err != nil {
 		return fmt.Errorf("error parsing registry path %q: %v", d.Get("state_store").(string), err)
 	}
@@ -446,10 +445,57 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Received Kops Cluster: %#v", name)
-	err = d.Set("name", cluster.Name)
+	// // d.Set("associate_public_ip", cluster.Spec)
+	// d.Set("api_load_balancer_type", "")                            //not implemented
+	// d.Set("bastion", false)                                        // need to determine like ^
+	// d.Set("dry_run", false) // need to determine like ^
+	// d.Set("encrypt_etcd_storage", fi.BoolValue(etcdMember.EncryptedVolume))
+	// d.Set("etcd_version", etcdCluster.Version)
+	// d.Set("subnets", cluster.Spec.Subnets) // subnets slice
+	// d.Set("target", cluster.Spec.Target) Force new
+	// d.Set("utility_subnets", cluster.Spec.Subnets) // need to find if exist
+	// etcdCluster := api.EtcdClusterSpec{}
+	// etcdMember := api.EtcdMemberSpec{}
+	d.Set("admin_access", cluster.Spec.KubernetesAPIAccess)
+	d.Set("authorization", cluster.Spec.Authorization.AlwaysAllow) // set for now need to pull not set
+	d.Set("cloud_labels", cluster.Spec.CloudLabels)
+	d.Set("config", cluster.Spec.ConfigBase) // computed
+	d.Set("dns", strings.ToLower(string(cluster.Spec.Topology.DNS.Type)))
+	d.Set("k8s_version", cluster.Spec.KubernetesVersion)
+	d.Set("name", cluster.Name)
+	d.Set("network_cidr", cluster.Spec.NetworkCIDR)
+	d.Set("networking", cluster.Spec.Networking)
+	d.Set("non_masquerade_cidr", cluster.Spec.NonMasqueradeCIDR)
+	d.Set("ssh_access", cluster.Spec.SSHAccess)
+	d.Set("state_store", strings.Split(cluster.Spec.ConfigBase, "/")) // Force new
+	d.Set("topology", cluster.Spec.Topology.Masters)
+	d.Set("vpc_id", cluster.Spec.NetworkID)
+
+	list, err := clientset.InstanceGroupsFor(cluster).List(metav1.ListOptions{})
 	if err != nil {
-		return err
+		return fmt.Errorf("cannot get InstanceGroups for %q: %v", cluster.ObjectMeta.Name, err)
+	}
+
+	for _, ig := range list.Items {
+
+		// Will need to deal with mult-zoned masters
+		if strings.Contains(ig.Name, "master") {
+			d.Set("image", ig.Spec.Image)
+			d.Set("master_per_zone", ig.Spec.MaxSize)
+			d.Set("master_security_groups", ig.Spec.SecurityGroupOverride)
+			d.Set("master_size", ig.Spec.MachineType)
+			d.Set("master_volume_size", ig.Spec.RootVolumeSize)
+			d.Set("master_zones", ig.Spec.Subnets) // Need to iterate each master
+		}
+		if strings.Contains(ig.Name, "node") {
+			d.Set("node_max_size", ig.Spec.MaxSize)
+			d.Set("node_min_size", ig.Spec.MinSize)
+			d.Set("node_security_groups", ig.Spec.SecurityGroupOverride)
+			d.Set("node_size", ig.Spec.MachineType)
+			d.Set("node_volume_size", ig.Spec.RootVolumeSize)
+			d.Set("node_zones", ig.Spec.Subnets)
+		}
+
 	}
 
 	return nil

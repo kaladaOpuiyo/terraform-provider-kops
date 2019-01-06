@@ -21,7 +21,6 @@ func kopsSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Description: "Specify associate_public_ip=[true|false] to enable/disable association of public IP for master ASG",
 			Optional:    true,
-			Default:     "",
 		},
 		"authorization": {
 			Type:        schema.TypeString,
@@ -51,7 +50,7 @@ func kopsSchema() map[string]*schema.Schema {
 		"config": {
 			Type:        schema.TypeString,
 			Description: "yaml config file(default is $HOME/.kops.yaml)",
-			Optional:    true,
+			Computed:    true,
 		},
 		"dns": {
 			Type:        schema.TypeString,
@@ -62,19 +61,17 @@ func kopsSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Description: "If true, only print the object that would be sent, without sending it. This can be used to create a cluster YAML or JSON manifest",
 			Optional:    true,
-			Default:     false,
+			Default:     "false",
 		},
 		"encrypt_etcd_storage": {
 			Type:        schema.TypeBool,
-			Description: "Generate key in aws kms and use it for encrypt etcd volumee",
+			Description: "Generate key in aws kms and use it for encrypt etcd volume",
 			Optional:    true,
-			Default:     true,
 		},
 		"etcd_version": {
 			Type:        schema.TypeString,
 			Description: "etcd version",
 			Optional:    true,
-			ForceNew:    true,
 			Default:     "3.2.24",
 		},
 		"image": {
@@ -173,18 +170,18 @@ func kopsSchema() map[string]*schema.Schema {
 			ForceNew:    true,
 			Required:    true,
 		},
-		"node_zones": {
+		"node_security_groups": {
 			Type:        schema.TypeList,
-			Description: "The list of node zones",
+			Description: "Add precreated additional security groups to nodes",
 			Required:    true,
 			ForceNew:    true,
 			Elem: &schema.Schema{
 				Type:     schema.TypeString,
 				MinItems: 1},
 		},
-		"node_security_groups": {
+		"node_zones": {
 			Type:        schema.TypeList,
-			Description: "Add precreated additional security groups to nodes",
+			Description: "The list of node zones",
 			Required:    true,
 			ForceNew:    true,
 			Elem: &schema.Schema{

@@ -9,6 +9,6 @@ help:
 ## github.com/miekg/coredns/middleware/etcd/msg - seems to not exist?
 ## github.com/digitalocean/godo/context - seems to not exist?
 build: ## Build Provider
-	glide update --resolve-current --force --no-recursive && \
+	dep ensure -v && \
 	cp  ./models/bindata.go ./vendor/k8s.io/kops/upup/models && \
 	go build -o ~/.terraform.d/plugins/darwin_amd64/terraform-provider-kops

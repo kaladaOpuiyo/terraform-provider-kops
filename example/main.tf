@@ -21,24 +21,22 @@ resource "kops_cluster" "aux_cluster" {
 
   admin_access           = ["0.0.0.0/0"] // optional,
   api_load_balancer_type = ""            // optional, not implemented, Testing
-  associate_public_ip    = true
+  associate_public_ip    = "true"        // optional
   authorization          = "AlwaysAllow"
-  bastion                = false // working out the bugs leave as for testing
-  cloud                  = "aws" // Only AWS for now
+  bastion                = "false" // working out the bugs leave as for testing
+  cloud                  = "aws"   // Only AWS for now
   cloud_labels           = "Owner=Kalada Opuiyo,env=test"
-  config                 = "" // optional, not implemented
-  depends_on             = ["aws_iam_user.kops"]
   dns                    = "public" // working out bugs leave as for testing
-  dry_run                = false
-  encrypt_etcd_storage   = true
+  dry_run                = "false"
   etcd_version           = "3.2.24"
+  encrypt_etcd_storage   = "true"
   image                  = "ami-03b850a018c8cd25e"
   k8s_version            = "v1.11.5"
-  master_per_zone        = 1  // optional, default is 1 per zone
+  master_per_zone        = 1  // optional, default is 1 per zone odd numbers only
   master_security_groups = [] // optional, not implemented
   master_size            = "t2.medium"
   master_volume_size     = 20
-  master_zones           = ["us-east-1a", "us-east-1b", "us-east-1d"]
+  master_zones           = ["us-east-1f"]
   model                  = "" // optional, not implemented
   name                   = "k8s.urbanradikal.com"
   network_cidr           = "10.0.0.0/16"
@@ -48,7 +46,7 @@ resource "kops_cluster" "aux_cluster" {
   node_security_groups   = [] // optional, not implemented
   node_size              = "t2.medium"
   node_volume_size       = 20
-  node_zones             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  node_zones             = ["us-east-1a", "us-east-1c"]
   out                    = ""            // optional, not implemented
   output                 = ""            // optional, not implemented
   ssh_access             = ["0.0.0.0/0"] // optional
@@ -60,6 +58,8 @@ resource "kops_cluster" "aux_cluster" {
   utility_subnets        = []       // optional, not implemented
   vpc_id                 = ""       // optional
   zones                  = []       // optional, not implemented
+
+  depends_on = ["aws_iam_user.kops"]
 }
 
 ##################################################################################################
