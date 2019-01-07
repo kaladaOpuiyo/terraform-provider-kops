@@ -6,15 +6,20 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
+	"time"
 
+	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/helper/schema"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
 	api "k8s.io/kops/pkg/apis/kops"
 	"k8s.io/kops/pkg/client/simple/vfsclientset"
 	commands "k8s.io/kops/pkg/commands"
 	"k8s.io/kops/pkg/kubeconfig"
 	"k8s.io/kops/pkg/resources"
 	ops "k8s.io/kops/pkg/resources/ops"
+	"k8s.io/kops/pkg/validation"
 	"k8s.io/kops/upup/pkg/fi"
 	"k8s.io/kops/upup/pkg/fi/cloudup"
 	"k8s.io/kops/upup/pkg/fi/utils"
@@ -28,7 +33,11 @@ func resourceKopsCluster() *schema.Resource {
 		Update: resourceKopsUpdate,
 		Delete: resourceKopsDelete,
 		Schema: kopsSchema(),
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(2 * time.Minute),
+		},
 	}
+
 }
 
 //Sourced:k8s.io/kops/
@@ -60,7 +69,6 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error parsing registry path %q: %v", d.Get("state_store").(string), err)
 	}
-	// clientset := meta.(*simple.Clientset)
 	clientset := vfsclientset.NewVFSClientset(registryBase, allowList)
 	cloud := fmt.Sprint(d.Get("cloud"))
 	networking := fmt.Sprint(d.Get("networking"))
@@ -106,6 +114,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		}
 	}
 	topology := fmt.Sprint(d.Get("topology"))
+	validateOnCreation := d.Get("validate_on_creation").(bool)
 	vpcID := fmt.Sprint(d.Get("vpc_id"))
 
 	cluster.ObjectMeta.Name = clusterName
@@ -420,9 +429,50 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	conf.WriteKubecfg()
 
-	d.SetId(clusterName)
+	// WIP ¯\_(ツ)_/¯
+	if validateOnCreation {
+		// Striped down to just the basics needed,
+		// troubleshooting from this point forward. Occasionally successful.
+		// CLI shows cluster ready mins ahead of provider.
+		// results.Failures cause errors committed out for now.
+		return resource.Retry(9*time.Minute, func() *resource.RetryError {
 
+			list, err := clientset.InstanceGroupsFor(cluster).List(metav1.ListOptions{})
+			if err != nil {
+				return resource.NonRetryableError(fmt.Errorf("cannot get InstanceGroups"))
+			}
+
+			contextName := cluster.ObjectMeta.Name
+			config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+				clientcmd.NewDefaultClientConfigLoadingRules(),
+				&clientcmd.ConfigOverrides{CurrentContext: contextName}).ClientConfig()
+			if err != nil {
+				return resource.NonRetryableError(fmt.Errorf("Cannot load kubecfg settings for %q: %v", contextName, err))
+			}
+
+			k8sClient, err := kubernetes.NewForConfig(config)
+			if err != nil {
+				return resource.NonRetryableError(fmt.Errorf("Cannot build kubernetes api client for %q: %v", contextName, err))
+			}
+			// validate cluster here
+			_, e := validation.ValidateCluster(cluster, list, k8sClient)
+			if e != nil {
+				return resource.RetryableError(fmt.Errorf("unexpected error during validation: %v", e))
+			}
+
+			// if len(result.Failures) != 0 {
+			// 	return resource.RetryableError(fmt.Errorf("Cluster Not Ready: %s", err))
+			// }
+
+			d.SetId(contextName)
+			return resource.NonRetryableError(resourceKopsRead(d, meta))
+		})
+
+	}
+
+	d.SetId(clusterName)
 	return resourceKopsRead(d, meta)
+
 }
 
 func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
@@ -445,9 +495,9 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	// // d.Set("associate_public_ip", cluster.Spec)
-	// d.Set("api_load_balancer_type", "")                            //not implemented
-	// d.Set("bastion", false)                                        // need to determine like ^
+	// d.Set("api_load_balancer_type", "") //not implemented
+	// d.Set("associate_public_ip", cluster.Spec)
+	// d.Set("bastion", false) // need to determine like ^
 	// d.Set("dry_run", false) // need to determine like ^
 	// d.Set("encrypt_etcd_storage", fi.BoolValue(etcdMember.EncryptedVolume))
 	// d.Set("etcd_version", etcdCluster.Version)

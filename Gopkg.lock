@@ -552,6 +552,14 @@
   revision = "fa9f258a92500514cc8e9c67020487709df92432"
 
 [[projects]]
+  digest = "1:51430c345f48c781f7f43146b574ec498c62c608bfff3715fef4c915d96ed4fc"
+  name = "github.com/hashicorp/logutils"
+  packages = ["."]
+  pruneopts = ""
+  revision = "a335183dfd075f638afcc820c90591ca3c97eba6"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:688cb240e2fa4eb81cbf93471eef796868d580218f7ac48383321451630de281"
   name = "github.com/hashicorp/terraform"
   packages = [
@@ -561,8 +569,11 @@
     "config/module",
     "dag",
     "flatmap",
+    "helper/config",
     "helper/hashcode",
     "helper/hilmapstructure",
+    "helper/logging",
+    "helper/resource",
     "helper/schema",
     "httpclient",
     "moduledeps",
@@ -1511,6 +1522,7 @@
     "pkg/urls",
     "pkg/util/stringorslice",
     "pkg/util/subnet",
+    "pkg/validation",
     "pkg/values",
     "protokube/pkg/etcd",
     "upup/models",
@@ -1629,16 +1641,20 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/hashicorp/terraform/helper/resource",
     "github.com/hashicorp/terraform/helper/schema",
     "github.com/hashicorp/terraform/plugin",
     "github.com/hashicorp/terraform/terraform",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
+    "k8s.io/client-go/kubernetes",
+    "k8s.io/client-go/tools/clientcmd",
     "k8s.io/kops/pkg/apis/kops",
     "k8s.io/kops/pkg/client/simple/vfsclientset",
     "k8s.io/kops/pkg/commands",
     "k8s.io/kops/pkg/kubeconfig",
     "k8s.io/kops/pkg/resources",
     "k8s.io/kops/pkg/resources/ops",
+    "k8s.io/kops/pkg/validation",
     "k8s.io/kops/upup/pkg/fi",
     "k8s.io/kops/upup/pkg/fi/cloudup",
     "k8s.io/kops/upup/pkg/fi/utils",

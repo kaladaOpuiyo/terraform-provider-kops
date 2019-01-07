@@ -56,8 +56,9 @@ resource "kops_cluster" "aux_cluster" {
   target                 = ""       // optional, not implemented
   topology               = "public" // working out bugs leave as for testing
   utility_subnets        = []       // optional, not implemented
-  vpc_id                 = ""       // optional
-  zones                  = []       // optional, not implemented
+  validate_on_creation   = "true"
+  vpc_id                 = "" // optional, not tested
+  zones                  = [] // optional, not implemented
 
   depends_on = ["aws_iam_user.kops"]
 }
