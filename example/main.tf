@@ -56,10 +56,16 @@ resource "kops_cluster" "aux_cluster" {
   target                 = ""       // optional, not implemented
   topology               = "public" // working out bugs leave as for testing
   utility_subnets        = []       // optional, not implemented
-  validate_on_creation   = "true"
-  vpc_id                 = "" // optional, not tested
-  zones                  = [] // optional, not implemented
+  validate_on_creation   = "false"  // optional works but still testing logic leave false
+  vpc_id                 = ""       // optional, not tested
+  zones                  = []       // optional, not implemented
 
+  kubelet {
+    anonymous_auth               = "false"
+    authentication_token_webhook = "true"
+    authorization_mode           = "webhook"
+
+  }
   depends_on = ["aws_iam_user.kops"]
 }
 

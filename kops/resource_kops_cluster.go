@@ -43,8 +43,22 @@ func resourceKopsCluster() *schema.Resource {
 //Sourced:k8s.io/kops/
 func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
-	var err error
+	var (
+		err                        error
+		anonymousAuth              bool
+		authenticationTokenWebhook bool
+		authorizationMode          string
+	)
+	if v, ok := d.GetOk("kubelet"); ok {
+		vL := v.(*schema.Set).List()
+		for _, vi := range vL {
+			mVi := vi.(map[string]interface{})
+			authorizationMode = fmt.Sprint(mVi["authorization_mode"])
+			anonymousAuth = mVi["anonymous_auth"].(bool)
+			authenticationTokenWebhook = mVi["authentication_token_webhook"].(bool)
 
+		}
+	}
 	adminAccess := make([]string, len(d.Get("admin_access").([]interface{})))
 	if len(adminAccess) == 0 {
 		adminAccess = []string{"0.0.0.0/0"}
@@ -255,22 +269,11 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	cluster.Spec.NonMasqueradeCIDR = nonMasqueradeCIDR
 
 	cluster.Spec.Kubelet = &api.KubeletConfigSpec{
-		AnonymousAuth: fi.Bool(false),
+		AnonymousAuth: fi.Bool(anonymousAuth),
 
 		// Hard Coded for now testing dont forget to add RBAC when creating these rules
-		AuthenticationTokenWebhook: fi.Bool(true),
-		AuthorizationMode:          "Webhook",
-
-		// Optional Parameters to be implemented
-		// ClientCAFile:               "",
-		// TLSCertFile:                "",
-		// TLSPrivateKeyFile:          "",
-		// LoadBalancerType:           "",
-		// IdleTimeoutSeconds:         "",
-		// SecurityGroupOverride:      "",
-		// AdditionalSecurityGroups:   " ",
-		// UseForInternalApi:          "",
-		// SSLCertificate:             "",
+		AuthenticationTokenWebhook: fi.Bool(authenticationTokenWebhook),
+		AuthorizationMode:          authorizationMode,
 	}
 
 	// Super scaled down from the cmd implementation mainly here for testing
@@ -452,21 +455,14 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 			Target:  []string{"Ready"},
 			Refresh: func() (interface{}, string, error) {
 
-				result, err := validation.ValidateCluster(cluster, list, k8sClient)
+				result, _ := validation.ValidateCluster(cluster, list, k8sClient)
 
-				var clusterStatus string
-
-				if err != nil {
-					clusterStatus = "Validating"
-				}
-				if len(result.Failures) != 0 {
-					clusterStatus = "Validating"
-
-				} else {
-					clusterStatus = "Ready"
+				if len(result.Failures) == 0 {
+					return result, "Ready", nil
 				}
 
-				return result, clusterStatus, nil
+				return result, "Validating", nil
+
 			},
 			Timeout:                   9 * time.Minute,
 			Delay:                     20 * time.Second,

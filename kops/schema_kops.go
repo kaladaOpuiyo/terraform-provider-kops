@@ -87,6 +87,28 @@ func kopsSchema() map[string]*schema.Schema {
 			ForceNew:    true,
 			Default:     "v1.11.5",
 		},
+		"kubelet": {
+			Type:     schema.TypeSet,
+			Optional: true,
+			MaxItems: 1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"anonymous_auth": {
+						Type:     schema.TypeBool,
+						Optional: true,
+					},
+
+					"authentication_token_webhook": {
+						Type:     schema.TypeBool,
+						Optional: true,
+					},
+					"authorization_mode": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+				},
+			},
+		},
 		"master_per_zone": {
 			Type:        schema.TypeInt,
 			Description: "Masters Per Zone",

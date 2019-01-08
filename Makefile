@@ -5,10 +5,8 @@ help:
 
 .DEFAULT_GOAL := help
 
-## Dependency issues with no existent pkgs cant use glide install yet
-## github.com/miekg/coredns/middleware/etcd/msg - seems to not exist?
-## github.com/digitalocean/godo/context - seems to not exist?
-build: ## Build Provider
+
+build: ## Build Provider ¯\_(ツ)_/¯
 	dep ensure -v && \
 	cp  ./models/bindata.go ./vendor/k8s.io/kops/upup/models && \
 	go build -o ~/.terraform.d/plugins/darwin_amd64/terraform-provider-kops
