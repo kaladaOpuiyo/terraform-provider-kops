@@ -429,44 +429,54 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	conf.WriteKubecfg()
 
-	// WIP ¯\_(ツ)_/¯
 	if validateOnCreation {
-		// Striped down to just the basics needed,
-		// troubleshooting from this point forward. Occasionally successful.
-		// CLI shows cluster ready mins ahead of provider.
-		// results.Failures cause errors committed out for now.
-		return resource.Retry(9*time.Minute, func() *resource.RetryError {
 
-			list, err := clientset.InstanceGroupsFor(cluster).List(metav1.ListOptions{})
-			if err != nil {
-				return resource.NonRetryableError(fmt.Errorf("cannot get InstanceGroups"))
-			}
+		list, err := clientset.InstanceGroupsFor(cluster).List(metav1.ListOptions{})
+		if err != nil {
+			return fmt.Errorf("cannot get InstanceGroups")
+		}
 
-			contextName := cluster.ObjectMeta.Name
-			config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
-				clientcmd.NewDefaultClientConfigLoadingRules(),
-				&clientcmd.ConfigOverrides{CurrentContext: contextName}).ClientConfig()
-			if err != nil {
-				return resource.NonRetryableError(fmt.Errorf("Cannot load kubecfg settings for %q: %v", contextName, err))
-			}
+		config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+			clientcmd.NewDefaultClientConfigLoadingRules(),
+			&clientcmd.ConfigOverrides{CurrentContext: clusterName}).ClientConfig()
+		if err != nil {
+			return fmt.Errorf("Cannot load kubecfg settings for %q: %v", clusterName, err)
+		}
 
-			k8sClient, err := kubernetes.NewForConfig(config)
-			if err != nil {
-				return resource.NonRetryableError(fmt.Errorf("Cannot build kubernetes api client for %q: %v", contextName, err))
-			}
-			// validate cluster here
-			_, e := validation.ValidateCluster(cluster, list, k8sClient)
-			if e != nil {
-				return resource.RetryableError(fmt.Errorf("unexpected error during validation: %v", e))
-			}
+		k8sClient, err := kubernetes.NewForConfig(config)
+		if err != nil {
+			return fmt.Errorf("Cannot build kubernetes api client for %q: %v", clusterName, err)
+		}
+		validateClusterState := &resource.StateChangeConf{
+			Pending: []string{"Validating"},
+			Target:  []string{"Ready"},
+			Refresh: func() (interface{}, string, error) {
 
-			// if len(result.Failures) != 0 {
-			// 	return resource.RetryableError(fmt.Errorf("Cluster Not Ready: %s", err))
-			// }
+				result, err := validation.ValidateCluster(cluster, list, k8sClient)
 
-			d.SetId(contextName)
-			return resource.NonRetryableError(resourceKopsRead(d, meta))
-		})
+				var clusterStatus string
+
+				if err != nil {
+					clusterStatus = "Validating"
+				}
+				if len(result.Failures) != 0 {
+					clusterStatus = "Validating"
+
+				} else {
+					clusterStatus = "Ready"
+				}
+
+				return result, clusterStatus, nil
+			},
+			Timeout:                   9 * time.Minute,
+			Delay:                     20 * time.Second,
+			MinTimeout:                20 * time.Second,
+			ContinuousTargetOccurence: 5,
+		}
+		_, err = validateClusterState.WaitForState()
+		if err != nil {
+			return fmt.Errorf("Error Validating cluster: %s", err)
+		}
 
 	}
 
