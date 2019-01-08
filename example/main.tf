@@ -20,7 +20,7 @@ provider "helm" {
 resource "kops_cluster" "aux_cluster" {
 
   admin_access           = ["0.0.0.0/0"] // optional,
-  api_load_balancer_type = ""            // optional, not implemented, Testing
+  api_load_balancer_type = "public"      // optional,
   associate_public_ip    = "true"        // optional
   authorization          = "AlwaysAllow"
   bastion                = "false" // working out the bugs leave as for testing
@@ -63,7 +63,7 @@ resource "kops_cluster" "aux_cluster" {
   kubelet {
     anonymous_auth               = "false"
     authentication_token_webhook = "true"
-    authorization_mode           = "webhook"
+    authorization_mode           = "Webhook"
 
   }
   depends_on = ["aws_iam_user.kops"]

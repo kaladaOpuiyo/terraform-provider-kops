@@ -171,7 +171,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	cluster.Spec.API = &api.AccessSpec{}
-	cluster.Spec.API.DNS = &api.DNSAccessSpec{}
+	// cluster.Spec.API.DNS = &api.DNSAccessSpec{}
 	cluster.Spec.Authorization = &api.AuthorizationSpec{}
 	if strings.EqualFold(authorization, "AlwaysAllow") {
 		cluster.Spec.Authorization.AlwaysAllow = &api.AlwaysAllowAuthorizationSpec{}
@@ -276,29 +276,20 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		AuthorizationMode:          authorizationMode,
 	}
 
-	// Super scaled down from the cmd implementation mainly here for testing
-	// if cluster.Spec.API.IsEmpty() {
-	if apiLoadBalancerType != "" {
-		cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
+	if cluster.Spec.API.IsEmpty() {
+		if apiLoadBalancerType != "" {
+			cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
+		} else {
+			switch cluster.Spec.Topology.Masters {
+			case api.TopologyPublic:
+				cluster.Spec.API.DNS = &api.DNSAccessSpec{}
+			case api.TopologyPrivate:
+				cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
+			default:
+				return fmt.Errorf("unknown master topology type: %q", cluster.Spec.Topology.Masters)
+			}
+		}
 	}
-	// else {
-	// 	switch cluster.Spec.Topology.Masters {
-	// 	case api.TopologyPublic:
-	// 		if dnsGossip.IsGossipHostname(cluster.Spec) {
-	// 			// gossip DNS names don't work outside the cluster, so we use a LoadBalancer instead
-	// 			cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
-	// 		} else {
-	// 			cluster.Spec.API.DNS = &api.DNSAccessSpec{}
-	// 		}
-
-	// 	case api.TopologyPrivate:
-	// 		cluster.Spec.API.LoadBalancer = &api.LoadBalancerAccessSpec{}
-
-	// 	default:
-	// 		return fmt.Errorf("unknown master topology type: %q", cluster.Spec.Topology.Masters)
-	// 	}
-	// }
-	// }
 	if cluster.Spec.API.LoadBalancer != nil && cluster.Spec.API.LoadBalancer.Type == "" {
 		switch apiLoadBalancerType {
 		case "", "public":
