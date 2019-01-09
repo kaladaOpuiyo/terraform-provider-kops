@@ -22,6 +22,11 @@ func kopsSchema() map[string]*schema.Schema {
 			Description: "Specify associate_public_ip=[true|false] to enable/disable association of public IP for master ASG",
 			Optional:    true,
 		},
+		"api_ssl_certificate": {
+			Type:        schema.TypeString,
+			Description: "Currently only supported in AWS. Sets the ARN of the SSL Certificate to use for the API server loadbalancer",
+			Optional:    true,
+		},
 		"authorization": {
 			Type:        schema.TypeString,
 			Description: "Authorization, RBAC or AlwaysAllow",
@@ -86,6 +91,12 @@ func kopsSchema() map[string]*schema.Schema {
 			Optional:    true,
 			ForceNew:    true,
 			Default:     "v1.11.5",
+		},
+		"kube_dns": {
+			Type:        schema.TypeString,
+			Description: "Kube DNS",
+			Optional:    true,
+			ForceNew:    true,
 		},
 		"kubelet": {
 			Type:     schema.TypeSet,

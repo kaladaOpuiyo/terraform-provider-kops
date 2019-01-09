@@ -16,12 +16,17 @@ provider "helm" {
 #################################################################################################
 # KOPS CLUSTER
 ##################################################################################################
-
+data "aws_acm_certificate" "domain_cert" {
+  domain      = "api.k8s.urbanradikal.com"
+  most_recent = true
+  types       = ["AMAZON_ISSUED"]
+}
 resource "kops_cluster" "aux_cluster" {
 
   admin_access           = ["0.0.0.0/0"] // optional,
-  api_load_balancer_type = "public"      // optional,
-  associate_public_ip    = "true"        // optional
+  api_ssl_certificate    = "${data.aws_acm_certificate.domain_cert.arn}"
+  api_load_balancer_type = "public" // optional,
+  associate_public_ip    = "true"   // optional
   authorization          = "AlwaysAllow"
   bastion                = "false" // working out the bugs leave as for testing
   cloud                  = "aws"   // Only AWS for now
@@ -32,6 +37,7 @@ resource "kops_cluster" "aux_cluster" {
   encrypt_etcd_storage   = "true"
   image                  = "ami-03b850a018c8cd25e"
   k8s_version            = "v1.11.5"
+  kube_dns               = "CoreDNS"
   master_per_zone        = 1  // optional, default is 1 per zone odd numbers only
   master_security_groups = [] // optional, not implemented
   master_size            = "t2.medium"
@@ -56,7 +62,7 @@ resource "kops_cluster" "aux_cluster" {
   target                 = ""       // optional, not implemented
   topology               = "public" // working out bugs leave as for testing
   utility_subnets        = []       // optional, not implemented
-  validate_on_creation   = "false"  // optional works but still testing logic leave false
+  validate_on_creation   = "true"   // optional works but still testing logic leave false
   vpc_id                 = ""       // optional, not tested
   zones                  = []       // optional, not implemented
 

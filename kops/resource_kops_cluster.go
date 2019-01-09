@@ -49,13 +49,13 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		authenticationTokenWebhook bool
 		authorizationMode          string
 	)
-	if v, ok := d.GetOk("kubelet"); ok {
-		vL := v.(*schema.Set).List()
-		for _, vi := range vL {
-			mVi := vi.(map[string]interface{})
-			authorizationMode = fmt.Sprint(mVi["authorization_mode"])
-			anonymousAuth = mVi["anonymous_auth"].(bool)
-			authenticationTokenWebhook = mVi["authentication_token_webhook"].(bool)
+	if k, ok := d.GetOk("kubelet"); ok {
+		l := k.(*schema.Set).List()
+		for _, vi := range l {
+			kubelet := vi.(map[string]interface{})
+			authorizationMode = fmt.Sprint(kubelet["authorization_mode"])
+			anonymousAuth = kubelet["anonymous_auth"].(bool)
+			authenticationTokenWebhook = kubelet["authentication_token_webhook"].(bool)
 
 		}
 	}
@@ -70,6 +70,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	allowList := true
 	apiLoadBalancerType := fmt.Sprint(d.Get("api_load_balancer_type"))
+	apiSSLCertificate := fmt.Sprint(d.Get("api_ssl_certificate"))
 	associatePublicIP := d.Get("associate_public_ip").(bool)
 	authorization := fmt.Sprint(d.Get("authorization"))
 	bastion := d.Get("bastion").(bool)
@@ -94,6 +95,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	image := fmt.Sprint(d.Get("image"))
 	instanceGroups := []*api.InstanceGroup{}
 	k8sVersion := fmt.Sprint(d.Get("k8s_version"))
+	kubeDNS := fmt.Sprint(d.Get("kube_dns"))
 	masterPerZone := fi.Int32(int32(d.Get("master_per_zone").(int)))
 	masters := []*api.InstanceGroup{}
 	masterSize := fmt.Sprint(d.Get("master_size"))
@@ -152,26 +154,11 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		Legacy:                 false,
 	}
 
-	// WIP
-	if bastion && topology != "public" {
-		bastionGroup := &api.InstanceGroup{}
-		bastionGroup.Spec.Role = api.InstanceGroupRoleBastion
-		bastionGroup.ObjectMeta.Name = "bastions"
-		bastionGroup.Spec.Image = image
-		instanceGroups = append(instanceGroups, bastionGroup)
-
-		cluster.Spec.Topology.Bastion = &api.BastionSpec{
-			BastionPublicName: "bastion." + clusterName,
-		}
-
-	}
-
 	if len(cloudLabels) != 0 {
 		cluster.Spec.CloudLabels = cloudLabels
 	}
 
 	cluster.Spec.API = &api.AccessSpec{}
-	// cluster.Spec.API.DNS = &api.DNSAccessSpec{}
 	cluster.Spec.Authorization = &api.AuthorizationSpec{}
 	if strings.EqualFold(authorization, "AlwaysAllow") {
 		cluster.Spec.Authorization.AlwaysAllow = &api.AlwaysAllowAuthorizationSpec{}
@@ -180,7 +167,10 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	} else {
 		return fmt.Errorf("unknown authorization mode %q", authorization)
 	}
-
+	if kubeDNS != "" {
+		cluster.Spec.KubeDNS = &api.KubeDNSConfig{}
+		cluster.Spec.KubeDNS.Provider = kubeDNS
+	}
 	cluster.Spec.Networking = &api.NetworkingSpec{}
 	switch networking {
 	case "classic":
@@ -214,7 +204,6 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		cluster.Spec.Networking.Calico = &api.CalicoNetworkingSpec{
 			MajorVersion: "v3",
 		}
-
 	case "canal":
 		cluster.Spec.Networking.Canal = &api.CanalNetworkingSpec{}
 	case "kube-router":
@@ -231,23 +220,17 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("unknown networking mode %q", networking)
 	}
 
-	cluster.Spec.Topology.DNS = &api.DNSSpec{}
-	if dns == "private" {
-		cluster.Spec.Topology.DNS.Type = api.DNSTypePrivate
-	} else {
-		cluster.Spec.Topology.DNS.Type = api.DNSTypePublic
-	}
-	// Need to handle Private networks as well for now just public ¯\_(ツ)_/¯
+	keys := make(map[string]bool)
+	subnetZones := append(nodeZones, masterZones...)
+
 	switch topology {
+
 	case api.TopologyPublic:
 		cluster.Spec.Topology.Masters = api.TopologyPublic
 		cluster.Spec.Topology.Nodes = api.TopologyPublic
 		if bastion {
 			return fmt.Errorf("bastion supports topology='private' only")
 		}
-
-		keys := make(map[string]bool)
-		subnetZones := append(nodeZones, masterZones...)
 
 		for _, subnetZone := range subnetZones {
 			if _, value := keys[subnetZone]; !value {
@@ -258,20 +241,69 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 					Type: api.SubnetTypePublic,
 				})
 			}
+		}
+
+	case api.TopologyPrivate:
+		cluster.Spec.Topology = &api.TopologySpec{
+			Masters: api.TopologyPrivate,
+			Nodes:   api.TopologyPrivate,
+		}
+		for _, subnetZone := range subnetZones {
+			if _, value := keys[subnetZone]; !value {
+				keys[subnetZone] = true
+				cluster.Spec.Subnets = append(cluster.Spec.Subnets, api.ClusterSubnetSpec{
+					Name: subnetZone,
+					Zone: subnetZone,
+					Type: api.SubnetTypePrivate,
+				})
+			}
+		}
+
+		var utilitySubnets []api.ClusterSubnetSpec
+
+		for _, s := range cluster.Spec.Subnets {
+			if s.Type == api.SubnetTypeUtility {
+				continue
+			}
+			subnet := api.ClusterSubnetSpec{
+				Name: "utility-" + s.Name,
+				Zone: s.Zone,
+				Type: api.SubnetTypeUtility,
+			}
+
+			utilitySubnets = append(utilitySubnets, subnet)
+		}
+		cluster.Spec.Subnets = append(cluster.Spec.Subnets, utilitySubnets...)
+
+		if bastion {
+			bastionGroup := &api.InstanceGroup{}
+			bastionGroup.Spec.Role = api.InstanceGroupRoleBastion
+			bastionGroup.ObjectMeta.Name = "bastions"
+			bastionGroup.Spec.Image = image
+			instanceGroups = append(instanceGroups, bastionGroup)
+
+			cluster.Spec.Topology.Bastion = &api.BastionSpec{
+				BastionPublicName: "bastion." + clusterName,
+			}
 
 		}
-	case api.TopologyPrivate:
-		return fmt.Errorf("Need to handle Private networks as well for now just public")
 
 	default:
 		return fmt.Errorf("invalid topology %s", topology)
+	}
+
+	cluster.Spec.Topology.DNS = &api.DNSSpec{}
+	if dns == "private" {
+		cluster.Spec.Topology.DNS.Type = api.DNSTypePrivate
+	} else {
+		cluster.Spec.Topology.DNS.Type = api.DNSTypePublic
 	}
 	cluster.Spec.NonMasqueradeCIDR = nonMasqueradeCIDR
 
 	cluster.Spec.Kubelet = &api.KubeletConfigSpec{
 		AnonymousAuth: fi.Bool(anonymousAuth),
 
-		// Hard Coded for now testing dont forget to add RBAC when creating these rules
+		// Dont forget to add RBAC when creating these rules
 		AuthenticationTokenWebhook: fi.Bool(authenticationTokenWebhook),
 		AuthorizationMode:          authorizationMode,
 	}
@@ -297,13 +329,13 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		case "internal":
 			cluster.Spec.API.LoadBalancer.Type = api.LoadBalancerTypeInternal
 		default:
-			return fmt.Errorf("unknown api-loadbalancer-type: %q", apiLoadBalancerType)
+			return fmt.Errorf("unknown api loadbalancer type: %q", apiLoadBalancerType)
 		}
 	}
 
-	// if cluster.Spec.API.LoadBalancer != nil && apiSSLCertificate != "" {
-	// 	cluster.Spec.API.LoadBalancer.SSLCertificate = apiSSLCertificate
-	// }
+	if cluster.Spec.API.LoadBalancer != nil && apiSSLCertificate != "" {
+		cluster.Spec.API.LoadBalancer.SSLCertificate = apiSSLCertificate
+	}
 
 	// Create master ig(s)
 	for i := 0; i < len(masterZones); i++ {
@@ -392,7 +424,6 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-	// privateDNS := cluster.Spec.Topology != nil && cluster.Spec.Topology.DNS.Type == kops.DNSTypePrivate
 	// Probably need to look into doing this another way ¯\_(ツ)_/¯
 	apply := &cloudup.ApplyClusterCmd{
 		Cluster:    cluster,
@@ -422,6 +453,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	conf.WriteKubecfg()
+	d.SetId(clusterName)
 
 	if validateOnCreation {
 
@@ -441,24 +473,29 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		if err != nil {
 			return fmt.Errorf("Cannot build kubernetes api client for %q: %v", clusterName, err)
 		}
+
 		validateClusterState := &resource.StateChangeConf{
 			Pending: []string{"Validating"},
 			Target:  []string{"Ready"},
 			Refresh: func() (interface{}, string, error) {
+				result := &validation.ValidationCluster{}
+				result, err = validation.ValidateCluster(cluster, list, k8sClient)
 
-				result, _ := validation.ValidateCluster(cluster, list, k8sClient)
-
-				if len(result.Failures) == 0 {
-					return result, "Ready", nil
+				if err != nil {
+					return nil, "Validating", nil
 				}
 
-				return result, "Validating", nil
+				if len(result.Failures) != 0 {
+					return nil, "Validating", nil
+				}
+
+				return nil, "Ready", nil
 
 			},
 			Timeout:                   9 * time.Minute,
 			Delay:                     20 * time.Second,
 			MinTimeout:                20 * time.Second,
-			ContinuousTargetOccurence: 5,
+			ContinuousTargetOccurence: 3,
 		}
 		_, err = validateClusterState.WaitForState()
 		if err != nil {
@@ -467,7 +504,6 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 
 	}
 
-	d.SetId(clusterName)
 	return resourceKopsRead(d, meta)
 
 }
