@@ -25,25 +25,25 @@ resource "kops_cluster" "aux_cluster" {
 
   admin_access           = ["0.0.0.0/0"] // optional,
   api_ssl_certificate    = "${data.aws_acm_certificate.domain_cert.arn}"
-  api_load_balancer_type = "public" // optional,
+  api_load_balancer_type = "Public" // Public or Internal caps please
   associate_public_ip    = "true"   // optional
   authorization          = "AlwaysAllow"
-  bastion                = "false" // working out the bugs leave as for testing
-  cloud                  = "aws"   // Only AWS for now
+  bastion                = "false"
+  cloud                  = "aws" // Only AWS for now
   cloud_labels           = "Owner=Kalada Opuiyo,env=test"
-  dns                    = "public" // working out bugs leave as for testing
-  dry_run                = "false"
+  dns                    = "public"
+  dry_run                = "false" // not implemented
   etcd_version           = "3.2.24"
   encrypt_etcd_storage   = "true"
   image                  = "ami-03b850a018c8cd25e"
-  k8s_version            = "v1.11.5"
+  k8s_version            = "v1.11.6"
   kube_dns               = "CoreDNS"
   master_per_zone        = 1  // optional, default is 1 per zone odd numbers only
   master_security_groups = [] // optional, not implemented
   master_size            = "t2.medium"
   master_volume_size     = 20
-  master_zones           = ["us-east-1f"]
-  model                  = "" // optional, not implemented
+  master_zones           = ["us-east-1f"] // odd numbers only
+  model                  = ""             // optional, not implemented
   name                   = "k8s.urbanradikal.com"
   network_cidr           = "10.0.0.0/16"
   networking             = "calico"
@@ -53,26 +53,33 @@ resource "kops_cluster" "aux_cluster" {
   node_size              = "t2.medium"
   node_volume_size       = 20
   node_zones             = ["us-east-1a", "us-east-1c"]
-  out                    = ""            // optional, not implemented
-  output                 = ""            // optional, not implemented
+  out                    = ""            // optional, not implemented terraform or yaml
+  output                 = ""            // optional, not implemented directory to output files output_dir
   ssh_access             = ["0.0.0.0/0"] // optional
   ssh_public_key         = "~/.ssh/kalada-admin.pub"
   state_store            = "s3://${aws_s3_bucket.kops_state.id}"
   subnets                = []       // optional, not implemented
   target                 = ""       // optional, not implemented
-  topology               = "public" // working out bugs leave as for testing
+  topology               = "public" // public, private
   utility_subnets        = []       // optional, not implemented
-  validate_on_creation   = "true"   // optional works but still testing logic leave false
-  vpc_id                 = ""       // optional, not tested
-  zones                  = []       // optional, not implemented
+  validate_on_creation   = "false"  // optional works but still testing logic leave false
+  network_id             = ""       // optional, not tested shared vpc id
 
   kubelet {
     anonymous_auth               = "false"
     authentication_token_webhook = "true"
     authorization_mode           = "Webhook"
-
   }
+
   depends_on = ["aws_iam_user.kops"]
+}
+data "kops_cloud_resources" "cluster_cloud_resources" {
+  cluster_name = "${kops_cluster.aux_cluster.id}"
+  state_store  = "${kops_cluster.aux_cluster.state_store}"
+}
+
+output "check_id" {
+  value = "${data.kops_cloud_resources.cluster_cloud_resources.load_balancer_id}"
 }
 
 ##################################################################################################

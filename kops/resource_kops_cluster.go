@@ -93,7 +93,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	encryptEtcdStorage := d.Get("encrypt_etcd_storage").(bool)
 	etcdVersion := fmt.Sprint(d.Get("etcd_version"))
 	image := fmt.Sprint(d.Get("image"))
-	instanceGroups := []*api.InstanceGroup{}
+	// instanceGroups := []*api.InstanceGroup{}
 	k8sVersion := fmt.Sprint(d.Get("k8s_version"))
 	kubeDNS := fmt.Sprint(d.Get("kube_dns"))
 	masterPerZone := fi.Int32(int32(d.Get("master_per_zone").(int)))
@@ -131,7 +131,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 	topology := fmt.Sprint(d.Get("topology"))
 	validateOnCreation := d.Get("validate_on_creation").(bool)
-	vpcID := fmt.Sprint(d.Get("vpc_id"))
+	networkID := fmt.Sprint(d.Get("network_id"))
 
 	cluster.ObjectMeta.Name = clusterName
 	cluster.Spec = api.ClusterSpec{
@@ -145,8 +145,8 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		NetworkCIDR:         networkCidr,
 	}
 
-	if vpcID != "" {
-		cluster.Spec.NetworkID = vpcID
+	if networkID != "" {
+		cluster.Spec.NetworkID = networkID
 	}
 
 	cluster.Spec.IAM = &api.IAMSpec{
@@ -280,7 +280,11 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 			bastionGroup.Spec.Role = api.InstanceGroupRoleBastion
 			bastionGroup.ObjectMeta.Name = "bastions"
 			bastionGroup.Spec.Image = image
-			instanceGroups = append(instanceGroups, bastionGroup)
+
+			_, err = clientset.InstanceGroupsFor(cluster).Create(bastionGroup)
+			if err != nil {
+				return err
+			}
 
 			cluster.Spec.Topology.Bastion = &api.BastionSpec{
 				BastionPublicName: "bastion." + clusterName,
@@ -455,8 +459,8 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	conf.WriteKubecfg()
 	d.SetId(clusterName)
 
+	// Buggy ¯\_(ツ)_/¯
 	if validateOnCreation {
-
 		list, err := clientset.InstanceGroupsFor(cluster).List(metav1.ListOptions{})
 		if err != nil {
 			return fmt.Errorf("cannot get InstanceGroups")
@@ -478,24 +482,21 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 			Pending: []string{"Validating"},
 			Target:  []string{"Ready"},
 			Refresh: func() (interface{}, string, error) {
-				result := &validation.ValidationCluster{}
-				result, err = validation.ValidateCluster(cluster, list, k8sClient)
 
-				if err != nil {
-					return nil, "Validating", nil
+				result, e := validation.ValidateCluster(cluster, list, k8sClient)
+
+				if e != nil {
+					return result, "Validating", nil
 				}
-
 				if len(result.Failures) != 0 {
-					return nil, "Validating", nil
+					return result, "Validating", nil
 				}
-
-				return nil, "Ready", nil
+				return result, "Ready", nil
 
 			},
-			Timeout:                   9 * time.Minute,
-			Delay:                     20 * time.Second,
-			MinTimeout:                20 * time.Second,
-			ContinuousTargetOccurence: 3,
+			Timeout:                   8 * time.Minute,
+			MinTimeout:                5 * time.Second,
+			ContinuousTargetOccurence: 2,
 		}
 		_, err = validateClusterState.WaitForState()
 		if err != nil {
@@ -528,22 +529,18 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	// d.Set("api_load_balancer_type", "") //not implemented
-	// d.Set("associate_public_ip", cluster.Spec)
-	// d.Set("bastion", false) // need to determine like ^
 	// d.Set("dry_run", false) // need to determine like ^
-	// d.Set("encrypt_etcd_storage", fi.BoolValue(etcdMember.EncryptedVolume))
-	// d.Set("etcd_version", etcdCluster.Version)
 	// d.Set("subnets", cluster.Spec.Subnets) // subnets slice
 	// d.Set("target", cluster.Spec.Target) Force new
 	// d.Set("utility_subnets", cluster.Spec.Subnets) // need to find if exist
-	// etcdCluster := api.EtcdClusterSpec{}
-	// etcdMember := api.EtcdMemberSpec{}
 	d.Set("admin_access", cluster.Spec.KubernetesAPIAccess)
+	d.Set("api_load_balancer_type", cluster.Spec.API.LoadBalancer.Type)
 	d.Set("authorization", cluster.Spec.Authorization.AlwaysAllow) // set for now need to pull not set
 	d.Set("cloud_labels", cluster.Spec.CloudLabels)
 	d.Set("config", cluster.Spec.ConfigBase) // computed
 	d.Set("dns", strings.ToLower(string(cluster.Spec.Topology.DNS.Type)))
+	d.Set("encrypt_etcd_storage", fi.BoolValue(cluster.Spec.EtcdClusters[0].Members[0].EncryptedVolume))
+	d.Set("etcd_version", cluster.Spec.EtcdClusters[0].Version)
 	d.Set("k8s_version", cluster.Spec.KubernetesVersion)
 	d.Set("name", cluster.Name)
 	d.Set("network_cidr", cluster.Spec.NetworkCIDR)
@@ -552,7 +549,7 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("ssh_access", cluster.Spec.SSHAccess)
 	d.Set("state_store", strings.Split(cluster.Spec.ConfigBase, "/")) // Force new
 	d.Set("topology", cluster.Spec.Topology.Masters)
-	d.Set("vpc_id", cluster.Spec.NetworkID)
+	d.Set("network_id", cluster.Spec.NetworkID)
 
 	list, err := clientset.InstanceGroupsFor(cluster).List(metav1.ListOptions{})
 	if err != nil {
@@ -561,12 +558,14 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 
 	for _, ig := range list.Items {
 
-		// Will need to deal with mult-zoned masters
+		// Will need to deal with mult-zoned masters,but values will likely be the same
 		if strings.Contains(ig.Name, "master") {
 			d.Set("image", ig.Spec.Image)
 			d.Set("master_per_zone", ig.Spec.MaxSize)
 			d.Set("master_security_groups", ig.Spec.SecurityGroupOverride)
 			d.Set("master_size", ig.Spec.MachineType)
+			d.Set("	associate_public_ip", ig.Spec.AssociatePublicIP)
+
 			d.Set("master_volume_size", ig.Spec.RootVolumeSize)
 			d.Set("master_zones", ig.Spec.Subnets) // Need to iterate each master
 		}
@@ -577,6 +576,11 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 			d.Set("node_size", ig.Spec.MachineType)
 			d.Set("node_volume_size", ig.Spec.RootVolumeSize)
 			d.Set("node_zones", ig.Spec.Subnets)
+		}
+		if strings.Contains(ig.Name, "bastion") {
+			d.Set("bastion", true)
+		} else {
+			d.Set("bastion", false)
 		}
 
 	}

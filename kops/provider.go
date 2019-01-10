@@ -8,6 +8,9 @@ import (
 // Provider Func
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
+		DataSourcesMap: map[string]*schema.Resource{
+			"kops_cloud_resources": dataSourceKopsCloudResources(),
+		},
 		ResourcesMap: map[string]*schema.Resource{
 			"kops_cluster": resourceKopsCluster(),
 		},

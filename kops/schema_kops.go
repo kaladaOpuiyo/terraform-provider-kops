@@ -290,11 +290,18 @@ func kopsSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Description: "Wait for Cluster to Validate Upon Creation. Useful when using data sources",
 			Optional:    true,
+			Default:     "false",
+		},
+		"network_id": {
+			Type:        schema.TypeString,
+			Description: "VPC ID, Set to use a shared VPC",
+			Optional:    true,
 		},
 		"vpc_id": {
 			Type:        schema.TypeString,
 			Description: "VPC ID, Set to use a shared VPC",
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"zones": {
