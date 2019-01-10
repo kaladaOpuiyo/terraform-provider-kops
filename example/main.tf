@@ -2,17 +2,17 @@ provider "aws" {
   region  = "us-east-1"
   version = "~> 1.45"
 }
-// Added for testing. Would be nice if helm could wait
-// for the kops cluster to validate before trying to install....¯\_(ツ)_/¯
-provider "helm" {
-  debug           = "true"
-  enable_tls      = "false"
-  install_tiller  = "false"
-  namespace       = "kube-system"
-  service_account = "tiller"
 
-  kubernetes {}
-}
+// Im going to integrate this provider into the kops provider. Do you use centos without yum ¯\_(ツ)_/¯
+# provider "helm" {
+#   debug           = "true"
+#   enable_tls      = "false"
+#   install_tiller  = "false"
+#   namespace       = "kube-system"
+#   service_account = "tiller"
+
+#   kubernetes {}
+# }
 #################################################################################################
 # KOPS CLUSTER
 ##################################################################################################
@@ -25,8 +25,8 @@ resource "kops_cluster" "aux_cluster" {
 
   admin_access           = ["0.0.0.0/0"] // optional,
   api_ssl_certificate    = "${data.aws_acm_certificate.domain_cert.arn}"
-  api_load_balancer_type = "Public" // Public or Internal caps please
-  associate_public_ip    = "true"   // optional
+  api_load_balancer_type = ""     // optional
+  associate_public_ip    = "true" // optional
   authorization          = "AlwaysAllow"
   bastion                = "false"
   cloud                  = "aws" // Only AWS for now
@@ -40,7 +40,7 @@ resource "kops_cluster" "aux_cluster" {
   kube_dns               = "CoreDNS"
   master_per_zone        = 1  // optional, default is 1 per zone odd numbers only
   master_security_groups = [] // optional, not implemented
-  master_size            = "t2.medium"
+  master_size            = "t2.micro"
   master_volume_size     = 20
   master_zones           = ["us-east-1f"] // odd numbers only
   model                  = ""             // optional, not implemented
@@ -50,7 +50,7 @@ resource "kops_cluster" "aux_cluster" {
   node_max_size          = 5
   node_min_size          = 2
   node_security_groups   = [] // optional, not implemented
-  node_size              = "t2.medium"
+  node_size              = "t2.micro"
   node_volume_size       = 20
   node_zones             = ["us-east-1a", "us-east-1c"]
   out                    = ""            // optional, not implemented terraform or yaml
@@ -62,7 +62,6 @@ resource "kops_cluster" "aux_cluster" {
   target                 = ""       // optional, not implemented
   topology               = "public" // public, private
   utility_subnets        = []       // optional, not implemented
-  validate_on_creation   = "false"  // optional works but still testing logic leave false
   network_id             = ""       // optional, not tested shared vpc id
 
   kubelet {
@@ -71,17 +70,42 @@ resource "kops_cluster" "aux_cluster" {
     authorization_mode           = "Webhook"
   }
 
+
   depends_on = ["aws_iam_user.kops"]
 }
 data "kops_cloud_resources" "cluster_cloud_resources" {
   cluster_name = "${kops_cluster.aux_cluster.id}"
   state_store  = "${kops_cluster.aux_cluster.state_store}"
 }
+output "cloud_resources" {
+  value = {
+    # load_balancer_id                = "${data.kops_cloud_resources.cluster_cloud_resources.load_balancer_id}"
+    autoscaling_config_masters_id   = "${data.kops_cloud_resources.cluster_cloud_resources.autoscaling_config_masters_id}"
+    autoscaling_config_nodes_id     = "${data.kops_cloud_resources.cluster_cloud_resources.autoscaling_config_nodes_id}"
+    autoscaling_group_masters_id    = "${data.kops_cloud_resources.cluster_cloud_resources.autoscaling_group_masters_id}"
+    autoscaling_group_nodes_id      = "${data.kops_cloud_resources.cluster_cloud_resources.autoscaling_group_nodes_id}"
+    dhcp_options_id                 = "${data.kops_cloud_resources.cluster_cloud_resources.dhcp_options_id}"
+    etcd_volumes_id                 = "${data.kops_cloud_resources.cluster_cloud_resources.etcd_volumes_id}"
+    iam_instance_profile_masters_id = "${data.kops_cloud_resources.cluster_cloud_resources.iam_instance_profile_masters_id}"
+    iam_instance_profile_nodes_id   = "${data.kops_cloud_resources.cluster_cloud_resources.iam_instance_profile_nodes_id}"
+    iam_role_masters_id             = "${data.kops_cloud_resources.cluster_cloud_resources.iam_role_masters_id}"
+    iam_role_nodes_id               = "${data.kops_cloud_resources.cluster_cloud_resources.iam_role_nodes_id}"
+    instance_bastion_id             = "${data.kops_cloud_resources.cluster_cloud_resources.instance_bastion_id}"
+    instance_masters_id             = "${data.kops_cloud_resources.cluster_cloud_resources.instance_masters_id}"
+    instance_nodes_id               = "${data.kops_cloud_resources.cluster_cloud_resources.instance_nodes_id}"
+    internet_gateway_id             = "${data.kops_cloud_resources.cluster_cloud_resources.internet_gateway_id}"
+    keypair_id                      = "${data.kops_cloud_resources.cluster_cloud_resources.keypair_id}"
+    route_table_id                  = "${data.kops_cloud_resources.cluster_cloud_resources.route_table_id}"
+    route53_records_api             = "${data.kops_cloud_resources.cluster_cloud_resources.route53_records_api}"
+    route53_records_etcd_id         = "${data.kops_cloud_resources.cluster_cloud_resources.route53_records_etcd_id}"
+    security_group_elbs_id          = "${data.kops_cloud_resources.cluster_cloud_resources.security_group_elbs_id}"
+    security_group_masters_id       = "${data.kops_cloud_resources.cluster_cloud_resources.security_group_masters_id}"
+    security_group_nodes_id         = "${data.kops_cloud_resources.cluster_cloud_resources.security_group_nodes_id}"
+    subnets_id                      = "${data.kops_cloud_resources.cluster_cloud_resources.subnets_id}"
+    vpc_id                          = "${data.kops_cloud_resources.cluster_cloud_resources.vpc_id}"
+  }
 
-output "check_id" {
-  value = "${data.kops_cloud_resources.cluster_cloud_resources.load_balancer_id}"
 }
-
 ##################################################################################################
 # S3
 ##################################################################################################

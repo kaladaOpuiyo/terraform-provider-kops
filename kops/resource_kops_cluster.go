@@ -1,7 +1,6 @@
 package kops
 
 import (
-	"encoding/csv"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -26,6 +25,10 @@ import (
 	"k8s.io/kops/util/pkg/vfs"
 )
 
+// func helmTillerInstall() {
+// 	h := helm.Provider().(*schema.Provider)
+
+// }
 func resourceKopsCluster() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceKopsCreate,
@@ -93,7 +96,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	encryptEtcdStorage := d.Get("encrypt_etcd_storage").(bool)
 	etcdVersion := fmt.Sprint(d.Get("etcd_version"))
 	image := fmt.Sprint(d.Get("image"))
-	// instanceGroups := []*api.InstanceGroup{}
+	instanceGroups := []*api.InstanceGroup{}
 	k8sVersion := fmt.Sprint(d.Get("k8s_version"))
 	kubeDNS := fmt.Sprint(d.Get("kube_dns"))
 	masterPerZone := fi.Int32(int32(d.Get("master_per_zone").(int)))
@@ -167,10 +170,12 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	} else {
 		return fmt.Errorf("unknown authorization mode %q", authorization)
 	}
+
 	if kubeDNS != "" {
 		cluster.Spec.KubeDNS = &api.KubeDNSConfig{}
 		cluster.Spec.KubeDNS.Provider = kubeDNS
 	}
+
 	cluster.Spec.Networking = &api.NetworkingSpec{}
 	switch networking {
 	case "classic":
@@ -290,6 +295,8 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 				BastionPublicName: "bastion." + clusterName,
 			}
 
+			instanceGroups = append(instanceGroups, bastionGroup)
+
 		}
 
 	default:
@@ -308,6 +315,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		AnonymousAuth: fi.Bool(anonymousAuth),
 
 		// Dont forget to add RBAC when creating these rules
+
 		AuthenticationTokenWebhook: fi.Bool(authenticationTokenWebhook),
 		AuthorizationMode:          authorizationMode,
 	}
@@ -361,6 +369,7 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		}
 
 		masters = append(masters, master)
+		instanceGroups = append(instanceGroups, master)
 
 		_, err = clientset.InstanceGroupsFor(cluster).Create(master)
 		if err != nil {
@@ -401,6 +410,8 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 		Subnets:           nodeZones,
 	}
 
+	instanceGroups = append(instanceGroups, nodes)
+
 	_, err = clientset.InstanceGroupsFor(cluster).Create(nodes)
 	if err != nil {
 		return err
@@ -428,11 +439,12 @@ func resourceKopsCreate(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return err
 	}
-	// Probably need to look into doing this another way ¯\_(ツ)_/¯
+
 	apply := &cloudup.ApplyClusterCmd{
-		Cluster:    cluster,
-		Clientset:  clientset,
-		TargetName: cloudup.TargetDirect,
+		Cluster:        cluster,
+		Clientset:      clientset,
+		TargetName:     cloudup.TargetDirect,
+		InstanceGroups: instanceGroups,
 	}
 
 	err = apply.Run()
@@ -533,10 +545,22 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 	// d.Set("subnets", cluster.Spec.Subnets) // subnets slice
 	// d.Set("target", cluster.Spec.Target) Force new
 	// d.Set("utility_subnets", cluster.Spec.Subnets) // need to find if exist
-	d.Set("admin_access", cluster.Spec.KubernetesAPIAccess)
-	d.Set("api_load_balancer_type", cluster.Spec.API.LoadBalancer.Type)
-	d.Set("authorization", cluster.Spec.Authorization.AlwaysAllow) // set for now need to pull not set
-	d.Set("cloud_labels", cluster.Spec.CloudLabels)
+
+	if cluster.Spec.KubernetesAPIAccess != nil {
+		d.Set("admin_access", cluster.Spec.KubernetesAPIAccess)
+	}
+	if cluster.Spec.API.LoadBalancer != nil && cluster.Spec.API.LoadBalancer.Type == "" {
+		d.Set("api_load_balancer_type", cluster.Spec.API.LoadBalancer.Type)
+	}
+	if cluster.Spec.Authorization.AlwaysAllow != nil {
+		d.Set("authorization", cluster.Spec.Authorization.AlwaysAllow)
+	} else {
+		d.Set("authorization", cluster.Spec.Authorization.RBAC)
+	}
+	if cluster.Spec.CloudLabels != nil {
+		d.Set("cloud_labels", cluster.Spec.CloudLabels)
+	}
+
 	d.Set("config", cluster.Spec.ConfigBase) // computed
 	d.Set("dns", strings.ToLower(string(cluster.Spec.Topology.DNS.Type)))
 	d.Set("encrypt_etcd_storage", fi.BoolValue(cluster.Spec.EtcdClusters[0].Members[0].EncryptedVolume))
@@ -588,9 +612,21 @@ func resourceKopsRead(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
+// time to flatten our cluster Object what fun
 func resourceKopsUpdate(d *schema.ResourceData, meta interface{}) error {
 
-	return resourceKopsRead(d, meta)
+	registryBase, err := vfs.Context.BuildVfsPath(d.Get("state_store").(string))
+
+	if err != nil {
+		return fmt.Errorf("error parsing registry path %q: %v", d.Get("state_store").(string), err)
+	}
+	allowList := true
+
+	clientset := vfsclientset.NewVFSClientset(registryBase, allowList)
+
+	clientset.UpdateCluster(&kops.Cluster{}, nil)
+
+	return resourceKopsCreate(d, meta)
 }
 
 func resourceKopsDelete(d *schema.ResourceData, meta interface{}) error {
@@ -657,31 +693,4 @@ func resourceKopsDelete(d *schema.ResourceData, meta interface{}) error {
 	d.SetId("")
 
 	return nil
-}
-
-// parseCloudLabels takes a CSV list of key=value records and parses them into a map. Nested '='s are supported via
-// quoted strings (eg `foo="bar=baz"` parses to map[string]string{"foo":"bar=baz"}. Nested commas are not supported.
-func parseCloudLabels(s string) (map[string]string, error) {
-
-	// Replace commas with newlines to allow a single pass with csv.Reader.
-	// We can't use csv.Reader for the initial split because it would see each key=value record as a single field
-	// and significantly complicates using quoted fields as keys or values.
-	records := strings.Replace(s, ",", "\n", -1)
-
-	// Let the CSV library do the heavy-lifting in handling nested ='s
-	r := csv.NewReader(strings.NewReader(records))
-	r.Comma = '='
-	r.FieldsPerRecord = 2
-	r.LazyQuotes = false
-	r.TrimLeadingSpace = true
-	kvPairs, err := r.ReadAll()
-	if err != nil {
-		return nil, fmt.Errorf("One or more key=value pairs are malformed:\n%s\n:%v", records, err)
-	}
-
-	m := make(map[string]string, len(kvPairs))
-	for _, pair := range kvPairs {
-		m[pair[0]] = pair[1]
-	}
-	return m, nil
 }
